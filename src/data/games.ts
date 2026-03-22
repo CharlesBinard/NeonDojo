@@ -57,4 +57,12 @@ export const GAMES: Game[] = [
     color: '#ff375f',
     hue: 'pink',
   },
+  {
+    id: 'numbermerge',
+    name: '2048',
+    description: 'Fais glisser les tuiles. Combine-les pour atteindre 2048 !',
+    emoji: '🔢',
+    color: '#00f5ff',
+    hue: 'cyan',
+  },
 ];

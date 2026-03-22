@@ -4,6 +4,7 @@ import {
   ConnectFourGame,
   FlappyGame,
   MemoryGame,
+  NumberMergeGame,
   PongGame,
   SnakeGame,
   TetrisGame,
@@ -21,6 +22,7 @@ const gameComponents: Record<GameId, React.ComponentType> = {
   flappy: FlappyGame,
   tictactoe: TicTacToeGame,
   connectfour: ConnectFourGame,
+  numbermerge: NumberMergeGame,
 };
 
 const colorMap: Record<string, string> = {

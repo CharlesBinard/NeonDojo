@@ -1,0 +1,1 @@
+export { NumberMergeGame } from './NumberMergeGame';
