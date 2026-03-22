@@ -1,4 +1,4 @@
-export type GameId = 'snake' | 'pong' | 'memory' | 'tetris' | 'flappy' | 'tictactoe'
+export type GameId = 'snake' | 'pong' | 'memory' | 'tetris' | 'flappy' | 'tictactoe' | 'connectfour'
 
 export interface Game {
   id: GameId

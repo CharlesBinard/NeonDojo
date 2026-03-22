@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { BackButton } from '@/components/ui'
-import { SnakeGame, PongGame, MemoryGame, TetrisGame, FlappyGame, TicTacToeGame } from '@/components/games'
+import { SnakeGame, PongGame, MemoryGame, TetrisGame, FlappyGame, TicTacToeGame, ConnectFourGame } from '@/components/games'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { GAMES } from '@/data/games'
 import type { GameId } from '@/types/games'
@@ -12,6 +12,7 @@ const gameComponents: Record<GameId, React.ComponentType> = {
   tetris: TetrisGame,
   flappy: FlappyGame,
   tictactoe: TicTacToeGame,
+  connectfour: ConnectFourGame,
 }
 
 const colorMap: Record<string, string> = {

@@ -49,4 +49,12 @@ export const GAMES: Game[] = [
     color: '#ff9f0a',
     hue: 'orange',
   },
+  {
+    id: 'connectfour',
+    name: 'Puissance 4',
+    description: '4 pions alignés. Le premier qui aligne gagne.',
+    emoji: '🎯',
+    color: '#ff375f',
+    hue: 'pink',
+  },
 ]
