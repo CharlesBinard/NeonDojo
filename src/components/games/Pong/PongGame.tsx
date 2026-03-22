@@ -51,6 +51,9 @@ export const PongGame = () => {
       if ((e.key === ' ' || e.key === 'Enter') && gameState !== 'playing') {
         startGame()
       }
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'W', 's', 'S'].includes(e.key)) {
+        e.preventDefault()
+      }
     }
     const handleKeyUp = (e: KeyboardEvent) => keysRef.current.delete(e.key)
     window.addEventListener('keydown', handleKey)
