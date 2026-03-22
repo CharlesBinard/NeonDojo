@@ -1,8 +1,8 @@
 # Exemple de compose pour développement local (utilise l'image GHCR pré-buildée)
 services:
   web:
-    image: ghcr.io/charlesbinard/rywoox-website:latest
-    container_name: rywoox-website
+    image: ghcr.io/charlesbinard/neondojo:latest
+    container_name: neondojo
     restart: unless-stopped
     ports:
       - "3000:80"

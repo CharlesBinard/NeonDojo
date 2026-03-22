@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/rywoox-website
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/neondojo
 
 jobs:
   build-and-push:
@@ -69,7 +69,7 @@ jobs:
   #         SERVER_USER: ${{ vars.SERVER_USER }}
   #       run: |
   #         ssh $SERVER_USER@$SERVER_HOST "
-  #           cd /path/to/rywoox-website &&
+  #           cd /path/to/neondojo &&
   #           docker compose pull &&
   #           docker compose up -d
   #         "

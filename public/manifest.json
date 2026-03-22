@@ -1,6 +1,6 @@
 {
-  "name": "Rywoox Mini Games",
-  "short_name": "Rywoox",
+  "name": "NeonDojo",
+  "short_name": "NeonDojo",
   "description": "6 Mini Games built with React & Canvas",
   "start_url": "/",
   "display": "standalone",

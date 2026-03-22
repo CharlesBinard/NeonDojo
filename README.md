@@ -1,9 +1,9 @@
-# Rywoox
+# NeonDojo
 
 > Hub de jeux rétro personalisé — [https://rywoox.com](https://rywoox.com)
 
-[![CI](https://github.com/CharlesBinard/rywoox-website/actions/workflows/ci.yml/badge.svg)](https://github.com/CharlesBinard/rywoox-website/actions/workflows/ci.yml)
-[![Deploy](https://github.com/CharlesBinard/rywoox-website/actions/workflows/deploy.yml/badge.svg)](https://github.com/CharlesBinard/rywoox-website/actions/workflows/deploy.yml)
+[![CI](https://github.com/CharlesBinard/neondojo/actions/workflows/ci.yml/badge.svg)](https://github.com/CharlesBinard/neondojo/actions/workflows/ci.yml)
+[![Deploy](https://github.com/CharlesBinard/neondojo/actions/workflows/deploy.yml/badge.svg)](https://github.com/CharlesBinard/neondojo/actions/workflows/deploy.yml)
 
 ---
 
@@ -37,8 +37,8 @@ Chaque jeu intègre des features IA via **Gemini AI** (via `@ai-sdk/google`).
 ## 🚀 Installation
 
 ```bash
-git clone https://github.com/CharlesBinard/rywoox-website.git
-cd rywoox-website
+git clone https://github.com/CharlesBinard/neondojo.git
+cd neondojo
 bun install
 bun run dev
 ```
@@ -79,7 +79,7 @@ bun run typecheck # vérification TypeScript
 
 Push sur n'importe quelle branche → **lint → typecheck → build**
 
-Push sur `main` → build & push de l'image Docker vers **GHCR** (`ghcr.io/CharlesBinard/rywoox-website`)
+Push sur `main` → build & push de l'image Docker vers **GHCR** (`ghcr.io/CharlesBinard/neondojo`)
 
 ---
 
