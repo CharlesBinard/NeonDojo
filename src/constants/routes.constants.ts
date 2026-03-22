@@ -4,6 +4,7 @@ export const SECTIONS = {
   ABOUT: 'about',
   SKILLS: 'skills',
   PROJECTS: 'projects',
+  GAMES: 'games',
 } as const
 
 export type SectionId = (typeof SECTIONS)[keyof typeof SECTIONS]

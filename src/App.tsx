@@ -5,6 +5,7 @@ import { Chat } from '@/components/Chat'
 import { About } from '@/components/About'
 import { Skills } from '@/components/Skills'
 import { Projects } from '@/components/Projects'
+import { SnakeGame } from '@/components/Snake'
 import { useChat } from '@/hooks'
 import { SECTIONS, type SectionId } from '@/constants/routes.constants'
 
@@ -27,7 +28,7 @@ function App() {
 
       <main className="container mx-auto px-4 py-24">
         <section id={SECTIONS.HERO} className="min-h-screen flex items-center justify-center">
-          <Hero onStartChat={() => scrollToSection(SECTIONS.CHAT)} />
+          <Hero onStartChat={() => scrollToSection(SECTIONS.CHAT)} onNavigate={scrollToSection} />
         </section>
 
         <section id={SECTIONS.CHAT} className="py-16">
@@ -49,6 +50,16 @@ function App() {
 
         <section id={SECTIONS.PROJECTS} className="py-16">
           <Projects />
+        </section>
+
+        <section id={SECTIONS.GAMES} className="py-16">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink bg-clip-text text-transparent mb-4">
+              🎮 Mini Games
+            </h2>
+            <p className="text-gray-400">Take a break and have some fun!</p>
+          </div>
+          <SnakeGame />
         </section>
       </main>
 

@@ -8,6 +8,7 @@ const navItems: Array<{ id: (typeof SECTIONS)[keyof typeof SECTIONS]; label: str
   { id: SECTIONS.ABOUT, label: 'About' },
   { id: SECTIONS.SKILLS, label: 'Skills' },
   { id: SECTIONS.PROJECTS, label: 'Projects' },
+  { id: SECTIONS.GAMES, label: '🎮 Games' },
 ]
 
 export const HeaderNav = ({ activeSection, onNavigate }: HeaderNavProps) => {

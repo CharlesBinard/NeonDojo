@@ -15,7 +15,11 @@ export const useChat = () => {
   }, [messages])
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+    // Use the container's scrollTo to avoid scrolling the page viewport
+    const container = document.querySelector('.chat-scroll') as HTMLElement
+    if (container) {
+      container.scrollTo({ top: container.scrollHeight, behavior: 'auto' })
+    }
   }, [])
 
   useEffect(() => {

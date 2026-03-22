@@ -1,6 +1,7 @@
 import { motion, type Variants } from 'framer-motion'
 import type { HeroProps } from './Hero.types'
 import { Button } from '@/components/ui'
+import { SECTIONS } from '@/constants/routes.constants'
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -25,7 +26,7 @@ const itemVariants: Variants = {
   },
 }
 
-export const Hero = ({ onStartChat }: HeroProps) => {
+export const Hero = ({ onStartChat, onNavigate }: HeroProps) => {
   return (
     <motion.div
       className="text-center max-w-3xl mx-auto"
@@ -75,6 +76,16 @@ export const Hero = ({ onStartChat }: HeroProps) => {
             className="text-lg px-10 py-4"
           >
             📂 View GitHub
+          </Button>
+        </motion.div>
+
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button
+            variant="secondary"
+            onClick={() => onNavigate(SECTIONS.GAMES)}
+            className="text-lg px-10 py-4"
+          >
+            🎮 Play Games
           </Button>
         </motion.div>
       </motion.div>
