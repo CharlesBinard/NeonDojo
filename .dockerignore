@@ -10,14 +10,6 @@ Dockerfile
 docker-compose.yml
 docker-compose.*.yml
 *.md
-*.lock
 *.log
 .eslintrc*
 eslint.config.js
-tsconfig*.json
-vite.config.ts
-index.html
-public
-src
-bun.lock
-bun.lockb
