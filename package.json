@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "biome lint ./src --skip-parse-errors",
+    "typecheck": "tsc --noEmit",
     "format": "biome format --write ./src --skip-parse-errors",
     "check": "biome check ./src --skip-parse-errors",
     "preview": "vite preview"
