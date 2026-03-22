@@ -14,7 +14,7 @@ const PLAYER_SPEED = 7;
 const WIN_SCORE = 5;
 
 type Vec2 = { x: number; y: number };
-type GameState = 'idle' | 'playing' | 'scored' | 'gameover';
+type GameState = 'idle' | 'playing' | 'scored' | 'gameover' | 'countdown';
 
 const paddleY = (HEIGHT - PADDLE_H) / 2;
 const aiY = (HEIGHT - PADDLE_H) / 2;
@@ -36,7 +36,7 @@ export const PongGame = () => {
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const launchDirRef = useRef(1);
 
-  const resetBall = useCallback((dir: number) => {
+  const resetBall = useCallback((_dir: number) => {
     ballRef.current = { x: WIDTH / 2, y: HEIGHT / 2 };
     velRef.current = { x: 0, y: 0 };
   }, []);
@@ -271,7 +271,7 @@ export const PongGame = () => {
     return () => {
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
-  }, [gameState, resetBall, launchBall]);
+  }, [gameState, resetBall, playerScore, aiScore]);
 
   return (
     <div className="flex flex-col items-center gap-6">

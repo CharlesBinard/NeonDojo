@@ -244,7 +244,7 @@ export const ConnectFourGame = () => {
               >
                 {Array.from({ length: COLS }, (_, c) => (
                   <div
-                    key={c}
+                    key={`hover-col-${c}`}
                     className={`flex items-start justify-center pt-0 rounded-full transition-all duration-150 ${c === hoverCol ? 'opacity-100' : 'opacity-0'}`}
                   >
                     <div
@@ -270,7 +270,7 @@ export const ConnectFourGame = () => {
 
                 return (
                   <motion.div
-                    key={`${r}-${c}`}
+                    key={`cell-${r}-${c}`}
                     className={`
                       w-12 h-12 md:w-14 md:h-14 rounded-full
                       border-2 border-dark-border
@@ -340,7 +340,7 @@ export const ConnectFourGame = () => {
             style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
           >
             {Array.from({ length: COLS }, (_, c) => (
-              <div key={c} className="relative pointer-events-auto cursor-pointer">
+              <div key={`col-overlay-${c}`} className="relative pointer-events-auto cursor-pointer">
                 {!winner && !dropping && getDropRow(board, c) !== -1 && (
                   <div
                     className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200"

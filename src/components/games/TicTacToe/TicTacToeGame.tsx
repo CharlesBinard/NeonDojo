@@ -109,7 +109,10 @@ const ScoreModal = ({ onClose }: { onClose: () => void }) => {
         ) : (
           <ul className="space-y-2">
             {scores.map((entry, i) => (
-              <li key={i} className="flex items-center gap-3 bg-dark-bg rounded-lg px-3 py-2">
+              <li
+                key={entry.date}
+                className="flex items-center gap-3 bg-dark-bg rounded-lg px-3 py-2"
+              >
                 <span
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold
                   ${i === 0 ? 'bg-yellow-400 text-black' : i === 1 ? 'bg-gray-300 text-black' : i === 2 ? 'bg-orange-400 text-black' : 'bg-dark-border text-gray-500'}`}

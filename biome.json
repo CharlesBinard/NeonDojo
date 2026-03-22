@@ -36,7 +36,7 @@
         "useKeyWithClickEvents": "off"
       },
       "suspicious": {
-        "noArrayIndexKey": "warn"
+        "noArrayIndexKey": "off"
       }
     }
   },
