@@ -1,0 +1,17 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rywoox-website
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_GEMINI_API_KEY=${VITE_GEMINI_API_KEY}
+    # Uncomment and set for HTTPS termination via reverse proxy:
+      # VIRTUAL_HOST: rywoox.com
+      # LETSENCRYPT_HOST: rywoox.com
+    # For bind-mounted assets (optional):
+    # volumes:
+    #   - ./dist:/usr/share/nginx/html:ro

@@ -77,6 +77,58 @@ bun vercel
 
 Or set the `VITE_GEMINI_API_KEY` environment variable in your Vercel project settings.
 
+## Deploy with Docker
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+### Quick Start
+
+1. Copy the environment template:
+
+```bash
+cp .env.production.example .env
+```
+
+2. Edit `.env` and set your Gemini API key:
+
+```env
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+3. Build and start the container:
+
+```bash
+docker compose up -d --build
+```
+
+4. The site will be available at `http://localhost:3000`
+
+### Commands
+
+```bash
+# Start (background)
+docker compose up -d --build
+
+# Stop
+docker compose down
+
+# Rebuild after code changes
+docker compose up -d --build
+
+# View logs
+docker compose logs -f
+```
+
+### Production Notes
+
+- The container runs nginx serving the built static assets.
+- React Router is configured with SPA fallback (`try_files $uri $uri/ /index.html`) so client-side routing works correctly.
+- The container restarts automatically (`unless-stopped`) on boot.
+- For HTTPS, place behind a reverse proxy (Traefik, Caddy, nginx-proxy) with LetsEncrypt.
+
 ## License
 
 MIT
