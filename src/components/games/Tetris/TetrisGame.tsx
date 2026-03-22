@@ -64,9 +64,13 @@ export const TetrisGame = () => {
       const shape = pieceRef.current.shape
       for (let r = 0; r < shape.length; r++) {
         for (let c = 0; c < shape[r].length; c++) {
-          if (shape[r][c] && boardRef.current[r][x + c]) {
-            setGameOver(true)
-            return false
+          if (shape[r][c]) {
+            const absY = y + r
+            // Only check rows that are actually within the board (not above)
+            if (absY >= 0 && absY < ROWS && boardRef.current[absY][x + c] !== -1) {
+              setGameOver(true)
+              return false
+            }
           }
         }
       }

@@ -1,13 +1,9 @@
 import { motion } from 'framer-motion'
 import { BackButton } from '@/components/ui'
 import { SnakeGame, PongGame, MemoryGame, TetrisGame, FlappyGame, TicTacToeGame } from '@/components/games'
-import type { GameId } from '@/types/games'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { GAMES } from '@/data/games'
-
-interface GameViewProps {
-  gameId: GameId
-  onBack: () => void
-}
+import type { GameId } from '@/types/games'
 
 const gameComponents: Record<GameId, React.ComponentType> = {
   snake: SnakeGame,
@@ -27,10 +23,23 @@ const colorMap: Record<string, string> = {
   orange: 'text-orange-400',
 }
 
-export const GameView = ({ gameId, onBack }: GameViewProps) => {
+export const GameView = () => {
+  const { gameId } = useParams({ from: '/game/$gameId' })
+  const navigate = useNavigate()
+
   const game = GAMES.find(g => g.id === gameId)
-  const GameComponent = gameComponents[gameId]
+  const GameComponent = gameComponents[gameId as GameId]
   const colorClass = colorMap[game?.hue ?? 'cyan'] || 'neon-cyan'
+
+  if (!game || !GameComponent) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
+        <div className="text-4xl">😕</div>
+        <p className="text-gray-400">Jeu introuvable</p>
+        <BackButton onClick={() => navigate({ to: '/' })} />
+      </div>
+    )
+  }
 
   return (
     <motion.div
@@ -43,14 +52,14 @@ export const GameView = ({ gameId, onBack }: GameViewProps) => {
     >
       <div className="container mx-auto px-4 flex flex-col items-center gap-8">
         <div className="flex flex-col items-center gap-2">
-          <div className="text-5xl mb-2">{game?.emoji}</div>
-          <h1 className={`text-3xl font-black ${colorClass}`}>{game?.name}</h1>
-          <p className="text-gray-500 text-sm">{game?.description}</p>
+          <div className="text-5xl mb-2">{game.emoji}</div>
+          <h1 className={`text-3xl font-black ${colorClass}`}>{game.name}</h1>
+          <p className="text-gray-500 text-sm">{game.description}</p>
         </div>
 
         <GameComponent />
 
-        <BackButton onClick={onBack} />
+        <BackButton onClick={() => navigate({ to: '/' })} />
       </div>
     </motion.div>
   )

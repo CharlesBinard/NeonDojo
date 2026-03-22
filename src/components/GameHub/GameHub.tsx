@@ -1,13 +1,11 @@
 import { motion } from 'framer-motion'
 import { GameCard } from '@/components/ui'
 import { GAMES } from '@/data/games'
-import type { GameId } from '@/types/games'
+import { useNavigate } from '@tanstack/react-router'
 
-interface GameHubProps {
-  onSelectGame: (id: GameId) => void
-}
+export const GameHub = () => {
+  const navigate = useNavigate()
 
-export const GameHub = ({ onSelectGame }: GameHubProps) => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center py-24">
       <motion.div
@@ -38,7 +36,7 @@ export const GameHub = ({ onSelectGame }: GameHubProps) => {
             key={game.id}
             game={game}
             index={i}
-            onClick={() => onSelectGame(game.id)}
+            onClick={() => navigate({ to: '/game/$gameId', params: { gameId: game.id } })}
           />
         ))}
       </div>
