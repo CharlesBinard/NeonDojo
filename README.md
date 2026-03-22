@@ -54,7 +54,7 @@ bun run dev
 ```bash
 cp .env.production.example .env
 # Édite .env et ajoute ta clé API Gemini
-docker compose up -d --build
+docker compose up -d
 ```
 
 Le conteneur expose le site sur **port 3000** et sert les assets statiques via **nginx**.

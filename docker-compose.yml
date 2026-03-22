@@ -1,8 +1,7 @@
+# Exemple de compose pour développement local (utilise l'image GHCR pré-buildée)
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/charlesbinard/rywoox-website:latest
     container_name: rywoox-website
     restart: unless-stopped
     ports:
