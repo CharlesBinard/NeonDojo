@@ -1,0 +1,1 @@
+export { TetrisGame } from './TetrisGame'

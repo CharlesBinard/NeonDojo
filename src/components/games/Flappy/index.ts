@@ -1,0 +1,1 @@
+export { FlappyGame } from './FlappyGame'

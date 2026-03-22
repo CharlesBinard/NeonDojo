@@ -1,3 +1,5 @@
 export { Button } from './Button'
 export { GlassCard } from './GlassCard'
 export { TypingIndicator } from './TypingIndicator'
+export { GameCard } from './GameCard'
+export { BackButton } from './BackButton'

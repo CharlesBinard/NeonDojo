@@ -1,0 +1,52 @@
+import type { Game } from '@/types/games'
+
+export const GAMES: Game[] = [
+  {
+    id: 'snake',
+    name: 'Snake',
+    description: 'Mange, grandis, survive. Le classique indémodable.',
+    emoji: '🐍',
+    color: '#00f5ff',
+    hue: 'cyan',
+  },
+  {
+    id: 'pong',
+    name: 'Pong',
+    description: 'Balles qui volent, raquettes qui tapent. 1v1 ou solo.',
+    emoji: '🏓',
+    color: '#bf5af2',
+    hue: 'purple',
+  },
+  {
+    id: 'memory',
+    name: 'Memory',
+    description: 'Trouve les paires. Teste ta mémoire.',
+    emoji: '🧠',
+    color: '#ff375f',
+    hue: 'pink',
+  },
+  {
+    id: 'tetris',
+    name: 'Tetris',
+    description: 'Blocs qui tombent, lignes qui disparaissent.',
+    emoji: '🧱',
+    color: '#30d158',
+    hue: 'green',
+  },
+  {
+    id: 'flappy',
+    name: 'Flappy',
+    description: 'Évite les tuyaux. Un seul but : pas mourir.',
+    emoji: '🕊️',
+    color: '#ffd60a',
+    hue: 'yellow',
+  },
+  {
+    id: 'tictactoe',
+    name: 'Tic Tac Toe',
+    description: 'X vs O. Le jeu le plus simple du monde.',
+    emoji: '⭕',
+    color: '#ff9f0a',
+    hue: 'orange',
+  },
+]

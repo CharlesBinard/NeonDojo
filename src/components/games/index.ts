@@ -1,0 +1,6 @@
+export { SnakeGame } from './Snake'
+export { PongGame } from './Pong'
+export { MemoryGame } from './Memory'
+export { TetrisGame } from './Tetris'
+export { FlappyGame } from './Flappy'
+export { TicTacToeGame } from './TicTacToe'

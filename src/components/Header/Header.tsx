@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion'
-import type { HeaderProps } from './Header.types'
-import { HeaderLogo } from './_partials/HeaderLogo'
-import { HeaderNav } from './_partials/HeaderNav'
-import { SECTIONS } from '@/constants/routes.constants'
 
-export const Header = ({ activeSection, onNavigate }: HeaderProps) => {
+interface HeaderProps {
+  title?: string
+  showBack?: boolean
+  onBack?: () => void
+}
+
+export const Header = ({ title, showBack, onBack }: HeaderProps) => {
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -14,9 +16,22 @@ export const Header = ({ activeSection, onNavigate }: HeaderProps) => {
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-16 md:h-18">
-          <HeaderLogo onClick={() => onNavigate(SECTIONS.HERO)} />
-          <div className="hidden md:block">
-            <HeaderNav activeSection={activeSection} onNavigate={onNavigate} />
+          {showBack && onBack ? (
+            <button
+              onClick={onBack}
+              className="flex items-center gap-2 text-gray-400 hover:text-neon-cyan transition-colors cursor-pointer"
+            >
+              <span className="text-xl">←</span>
+              <span className="font-bold text-lg gradient-text">{title || 'Rywoox'}</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">👨‍💻</span>
+              <span className="font-bold text-xl gradient-text">Rywoox</span>
+            </div>
+          )}
+          <div className="text-sm font-mono text-gray-500">
+            {title && !showBack ? title : null}
           </div>
         </div>
       </div>
