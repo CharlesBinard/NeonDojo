@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { GlassCard } from '@/components/ui'
 
 const skills = [
@@ -16,36 +16,64 @@ const skills = [
   { name: 'Rust', icon: '🦀', gradient: 'from-orange-500 to-red-500' },
 ]
 
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.2,
+    },
+  },
+}
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 30, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+}
+
 export const Skills = () => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
+      viewport={{ once: true, margin: '-100px' }}
+      transition={{ duration: 0.7, ease: 'easeOut' }}
       className="max-w-4xl mx-auto"
     >
-      <h2 className="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-neon-cyan to-neon-purple bg-clip-text text-transparent">
+      <h2 className="text-4xl font-bold mb-12 text-center bg-gradient-to-r from-neon-cyan to-neon-purple bg-clip-text text-transparent">
         Tech Stack
       </h2>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {skills.map((skill, index) => (
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+      >
+        {skills.map((skill) => (
           <motion.div
             key={skill.name}
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
-            whileHover={{ scale: 1.1, y: -5 }}
+            variants={itemVariants}
+            whileHover={{
+              scale: 1.08,
+              y: -6,
+              transition: { type: 'spring', stiffness: 300, damping: 20 },
+            }}
           >
-            <GlassCard glowBorder className="text-center cursor-pointer group">
+            <GlassCard glowBorder className="text-center cursor-pointer group h-full flex flex-col items-center justify-center p-5">
               <div
-                className={`
-                  text-4xl mb-2 mx-auto w-fit rounded-lg p-2
-                  bg-gradient-to-br ${skill.gradient}
-                  group-hover:animate-bounce transition-all
-                `}
+                className={`text-4xl mb-3 mx-auto rounded-xl p-2 bg-gradient-to-br ${skill.gradient}`}
+                style={{ filter: 'drop-shadow(0 0 8px rgba(0,245,255,0.3))' }}
               >
                 {skill.icon}
               </div>
@@ -55,7 +83,7 @@ export const Skills = () => {
             </GlassCard>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </motion.div>
   )
 }

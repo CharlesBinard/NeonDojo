@@ -11,30 +11,29 @@ export const Chat = ({ messages, isLoading, messagesEndRef }: ChatProps) => {
   const [inputValue, setInputValue] = useState('')
 
   const handleSendMessage = (message: string) => {
-    setInputValue('')
-    // Parent handles the actual message sending via onSendMessage prop
-    // This component just displays messages and passes input up
     const event = new CustomEvent('chat:send', { detail: { message } })
     window.dispatchEvent(event)
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
       className="max-w-4xl mx-auto"
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.2, duration: 0.5 }}
         className="text-center mb-8"
       >
         <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-neon-cyan to-neon-purple bg-clip-text text-transparent">
           Rywoox Assistant
         </h2>
-        <p className="text-gray-400">
+        <p className="text-gray-400 max-w-md mx-auto">
           Ask me anything about Charles Binard — his projects, skills, experience...
         </p>
       </motion.div>
@@ -42,55 +41,70 @@ export const Chat = ({ messages, isLoading, messagesEndRef }: ChatProps) => {
       <GlassCard glowBorder padding="none" className="overflow-hidden">
         <ChatHeader />
 
-        <div className="h-[500px] overflow-y-auto p-6 space-y-4">
-          <AnimatePresence>
+        <div className="h-[500px] overflow-y-auto p-6 space-y-4 scroll-smooth">
+          <AnimatePresence mode="popLayout">
             {messages.length === 0 && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
                 className="text-center text-gray-500 mt-20"
               >
-                <p className="text-4xl mb-4">🤖</p>
-                <p>Start a conversation about Rywoox!</p>
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  className="text-6xl mb-4"
+                >
+                  🤖
+                </motion.div>
+                <p className="text-lg">Start a conversation about Rywoox!</p>
+                <p className="text-sm mt-2 text-gray-600">I can tell you about his projects, skills, and more</p>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {messages.map((message, index) => (
-            <ChatMessage
-              key={message.id}
-              id={message.id}
-              role={message.role}
-              content={message.content}
-              timestamp={message.timestamp}
-              index={index}
-            />
-          ))}
+          <AnimatePresence mode="popLayout">
+            {messages.map((message, index) => (
+              <ChatMessage
+                key={message.id}
+                id={message.id}
+                role={message.role}
+                content={message.content}
+                timestamp={message.timestamp}
+                index={index}
+              />
+            ))}
+          </AnimatePresence>
 
           {isLoading && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
               className="flex justify-start"
             >
-              <div className="bg-dark-card border border-dark-border rounded-2xl px-4 py-3">
+              <div className="bg-dark-card border border-dark-border rounded-2xl px-5 py-4">
                 <TypingIndicator />
               </div>
             </motion.div>
           )}
 
-          <div ref={messagesEndRef} />
+          <div ref={messagesEndRef} className="h-px" />
         </div>
 
-        <div className="border-t border-dark-border p-4">
+        <motion.div
+          className="border-t border-dark-border p-4 bg-dark-bg/50"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
           <ChatInput
             value={inputValue}
             onChange={setInputValue}
             onSubmit={handleSendMessage}
             isLoading={isLoading}
           />
-        </div>
+        </motion.div>
       </GlassCard>
     </motion.div>
   )
