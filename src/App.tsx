@@ -1,40 +1,74 @@
-import { useState } from 'react'
-import Hero from './components/Hero'
-import Chat from './components/Chat'
-import About from './components/About'
-import Skills from './components/Skills'
-import Projects from './components/Projects'
-import Navigation from './components/Navigation'
+import { useState, useEffect, useRef } from 'react'
+import { Header } from '@/components/Header'
+import { Hero } from '@/components/Hero'
+import { Chat } from '@/components/Chat'
+import { About } from '@/components/About'
+import { Skills } from '@/components/Skills'
+import { Projects } from '@/components/Projects'
+import { useChat } from '@/hooks'
+import { SECTIONS, type SectionId } from '@/constants/routes.constants'
 
 function App() {
-  const [activeSection, setActiveSection] = useState('hero')
+  const [activeSection, setActiveSection] = useState<SectionId>(SECTIONS.HERO)
+  const { messages, isLoading, sendMessage, messagesEndRef } = useChat()
+  const chatMessageRef = useRef(messages)
+
+  // Keep ref updated with latest messages
+  useEffect(() => {
+    chatMessageRef.current = messages
+  }, [messages])
+
+  // Listen for chat:send events from ChatInput
+  useEffect(() => {
+    const handleChatSend = (e: CustomEvent<{ message: string }>) => {
+      sendMessage(e.detail.message)
+    }
+
+    window.addEventListener('chat:send', handleChatSend as EventListener)
+    return () => {
+      window.removeEventListener('chat:send', handleChatSend as EventListener)
+    }
+  }, [sendMessage])
+
+  const scrollToSection = (sectionId: SectionId) => {
+    setActiveSection(sectionId)
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 
   return (
     <div className="min-h-screen bg-dark-bg">
-      <Navigation activeSection={activeSection} setActiveSection={setActiveSection} />
-      
+      <Header activeSection={activeSection} onNavigate={scrollToSection} />
+
       <main className="container mx-auto px-4 py-24">
-        <section id="hero" className="min-h-screen flex items-center justify-center">
-          <Hero onStartChat={() => setActiveSection('chat')} />
+        <section id={SECTIONS.HERO} className="min-h-screen flex items-center justify-center">
+          <Hero onStartChat={() => scrollToSection(SECTIONS.CHAT)} />
         </section>
-        
-        <section id="chat" className="min-h-screen py-16">
-          <Chat />
+
+        <section id={SECTIONS.CHAT} className="min-h-screen py-16">
+          <Chat
+            messages={messages}
+            isLoading={isLoading}
+            messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement | null>}
+            onSendMessage={sendMessage}
+          />
         </section>
-        
-        <section id="about" className="py-16">
+
+        <section id={SECTIONS.ABOUT} className="py-16">
           <About />
         </section>
-        
-        <section id="skills" className="py-16">
+
+        <section id={SECTIONS.SKILLS} className="py-16">
           <Skills />
         </section>
-        
-        <section id="projects" className="py-16">
+
+        <section id={SECTIONS.PROJECTS} className="py-16">
           <Projects />
         </section>
       </main>
-      
+
       <footer className="py-8 text-center text-gray-500 border-t border-dark-border">
         <p>Built by Rywoox with React & Gemini</p>
       </footer>
