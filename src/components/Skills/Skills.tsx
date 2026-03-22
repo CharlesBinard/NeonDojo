@@ -21,20 +21,20 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.2,
+      staggerChildren: 0.06,
+      delayChildren: 0.3,
     },
   },
 }
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30, scale: 0.9 },
+  hidden: { opacity: 0, y: 20, scale: 0.9 },
   visible: {
     opacity: 1,
     y: 0,
     scale: 1,
     transition: {
-      duration: 0.5,
+      duration: 0.4,
       ease: 'easeOut',
     },
   },
@@ -45,7 +45,7 @@ export const Skills = () => {
     <motion.div
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-100px' }}
+      viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.7, ease: 'easeOut' }}
       className="max-w-4xl mx-auto"
     >
@@ -56,8 +56,7 @@ export const Skills = () => {
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+        animate="visible"
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
       >
         {skills.map((skill) => (

@@ -8,8 +8,13 @@ export const useChat = () => {
   const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
+  // Keep a ref to latest messages to avoid stale closure in async sendMessage
+  const messagesRef = useRef<ChatMessage[]>([])
+  useEffect(() => {
+    messagesRef.current = messages
+  }, [messages])
+
   const scrollToBottom = useCallback(() => {
-    // Use instant scroll to avoid conflicts with CSS/Framer Motion
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
   }, [])
 
@@ -45,7 +50,8 @@ export const useChat = () => {
     setError(null)
 
     try {
-      const allMessages = [...messages, userMessage]
+      // Use messagesRef to always get the latest messages (avoid stale closure)
+      const allMessages = [...messagesRef.current, userMessage]
       const response = await sendMessageToGemini(allMessages)
 
       const assistantMessage: ChatMessage = {
@@ -59,7 +65,7 @@ export const useChat = () => {
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Failed to send message'
       setError(errorMsg)
-      
+
       const errorMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
@@ -70,7 +76,7 @@ export const useChat = () => {
     } finally {
       setIsLoading(false)
     }
-  }, [messages, isLoading])
+  }, [isLoading, scrollToBottom])
 
   const clearMessages = useCallback(() => {
     setMessages([])
