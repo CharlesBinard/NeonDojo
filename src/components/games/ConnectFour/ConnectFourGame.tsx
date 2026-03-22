@@ -171,34 +171,38 @@ export const ConnectFourGame = () => {
         )}
       </div>
 
-      {/* Column hover indicators */}
+      {/* Board wrapper */}
       <div className="relative">
-        <div className="flex gap-1 px-2 pb-1">
-          {Array.from({ length: COLS }, (_, c) => (
-            <div key={c} className="w-12 md:w-14 h-6" />
-          ))}
-          <AnimatePresence>
-            {hoverCol !== null && !winner && !dropping && (
-              <motion.div
-                key={hoverCol}
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 0.6, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                className={`absolute top-0 w-12 md:w-14 h-12 rounded-full ${playerColors[current].bg} ${playerColors[current].glow}`}
-                style={{ left: `${hoverCol * (hoverCol < 4 ? 52 : 52) + 8}px` }}
-              />
-            )}
-          </AnimatePresence>
-        </div>
-
         {/* Board */}
         <motion.div
           className="relative p-3 rounded-2xl glass border border-dark-border"
           layout
         >
+          {/* Hover column indicator overlay */}
+          <AnimatePresence>
+            {hoverCol !== null && !winner && !dropping && (
+              <div
+                className="absolute inset-0 pointer-events-none z-10 p-3 grid gap-1"
+                style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
+              >
+                {Array.from({ length: COLS }, (_, c) => (
+                  <div
+                    key={c}
+                    className={`flex items-start justify-center pt-0 rounded-full transition-all duration-150 ${c === hoverCol ? 'opacity-100' : 'opacity-0'}`}
+                  >
+                    <div
+                      className={`w-12 md:w-14 h-12 rounded-full ${playerColors[current].bg} ${playerColors[current].glow}`}
+                      style={{ opacity: 0.55 }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </AnimatePresence>
+
           {/* Grid background */}
           <div
-            className="grid gap-1"
+            className="grid gap-1 relative z-0"
             style={{ gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))` }}
           >
             {Array.from({ length: ROWS }, (_, r) =>
@@ -235,8 +239,8 @@ export const ConnectFourGame = () => {
                           transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
                           className={`
                             absolute inset-1 rounded-full
-                            ${playerColors[player!].bg}
-                            ${isWin ? playerColors[player!].glow : 'opacity-90'}
+                            ${playerColors[dropping.player].bg}
+                            ${isWin ? playerColors[dropping.player].glow : 'opacity-90'}
                           `}
                         />
                       ) : player ? (
