@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAchievementStore } from '@/stores/achievementStore';
+import { useGameStore } from '@/stores/gameStore';
 
 const GRID_SIZE = 4;
 const CELL_SIZE = 80;
@@ -209,6 +210,7 @@ const GAME_ID = 'numbermerge';
 
 export const NumberMergeGame = () => {
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const saveScore = useGameStore((s) => s.saveScore);
   const [grid, setGrid] = useState<Grid>(() => {
     const g = createEmptyGrid();
     const [g1] = addRandomTile(g);
@@ -372,13 +374,14 @@ export const NumberMergeGame = () => {
         const rowMax = Math.max(...(row.filter((v): v is number => v !== null) as number[]));
         return Math.max(max, rowMax);
       }, 0);
+      saveScore(GAME_ID, score);
       if (won) {
         checkAchievements(GAME_ID, { gamesPlayed: 1, highestTile: Math.max(maxTile, 2048) });
       } else {
         checkAchievements(GAME_ID, { bestScore: score, gamesPlayed: 1, highestTile: maxTile });
       }
     }
-  }, [gameOver, won, gameStarted, grid, score, checkAchievements]);
+  }, [gameOver, won, gameStarted, grid, score, checkAchievements, saveScore]);
 
   const gridWidth = GRID_SIZE * CELL_SIZE + (GRID_SIZE + 1) * GAP;
   const gridHeight = gridWidth;
@@ -429,31 +432,7 @@ export const NumberMergeGame = () => {
         </div>
 
         {/* Tiles */}
-        <div className="absolute" style={{ top: GAP, left: GAP }}>
-          {tiles.map((tile) => {
-            const color = getTileColor(tile.value);
-            return (
-              <motion.div
-                key={tile.id}
-                className={`absolute rounded-xl flex items-center justify-center font-black ${color.bg} ${color.text} ${color.glow} ${color.border} border`}
-                style={{
-                  width: CELL_SIZE,
-                  height: CELL_SIZE,
-                  fontSize: undefined,
-                }}
-                initial={tile.isNew ? { scale: 0, opacity: 0 } : false}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={
-                  tile.isNew ? { type: 'spring', stiffness: 600, damping: 25 } : { duration: 0.1 }
-                }
-              >
-                <span className={`${getTileFontSize(tile.value)}`}>{tile.value}</span>
-              </motion.div>
-            );
-          })}
-        </div>
 
-        {/* Positioning tiles absolutely based on row/col */}
         <div className="absolute" style={{ top: GAP, left: GAP }}>
           {tiles.map((tile) => {
             const color = getTileColor(tile.value);
