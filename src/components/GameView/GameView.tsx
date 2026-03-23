@@ -41,6 +41,11 @@ const gameComponents: Record<GameId, React.LazyExoticComponent<React.ComponentTy
       default: m.MinesweeperGame,
     }))
   ),
+  breakout: lazy(() =>
+    import('@/components/games/Breakout/BreakoutGame').then((m) => ({
+      default: m.BreakoutGame,
+    }))
+  ),
 };
 
 const colorMap: Record<string, string> = {

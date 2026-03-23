@@ -7,7 +7,8 @@ export type GameId =
   | 'tictactoe'
   | 'connectfour'
   | 'numbermerge'
-  | 'minesweeper';
+  | 'minesweeper'
+  | 'breakout';
 
 export interface Game {
   id: GameId;

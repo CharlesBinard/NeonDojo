@@ -73,4 +73,12 @@ export const GAMES: Game[] = [
     color: '#8b949e',
     hue: 'gray',
   },
+  {
+    id: 'breakout',
+    name: 'Breakout',
+    description: 'Détruis les briques avec la balle. 3 vies.',
+    emoji: '🧱',
+    color: '#ff375f',
+    hue: 'pink',
+  },
 ];
