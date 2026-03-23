@@ -2,6 +2,7 @@
 
 // TODO: integrate leaderboard
 
+import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const CELL_SIZE = 22;
@@ -18,6 +19,8 @@ const INITIAL_SNAKE: Position[] = [
   { x: 9, y: 9 },
 ];
 
+const GAME_ID = 'snake';
+
 const getRandomFood = (snake: Position[]): Position => {
   let food: Position;
   do {
@@ -31,6 +34,7 @@ const getRandomFood = (snake: Position[]): Position => {
 
 export const SnakeGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const checkAchievements = useAchievementStore((s) => s.checkAchievements);
   const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
   const [food, setFood] = useState<Position>(getRandomFood(INITIAL_SNAKE));
   const [direction, setDirection] = useState<Direction>('RIGHT');
@@ -300,6 +304,13 @@ export const SnakeGame = () => {
       setDirection(dir);
     }
   };
+
+  // Check achievements on game over
+  useEffect(() => {
+    if (gameOver && gameStarted) {
+      checkAchievements(GAME_ID, { bestScore: score, gamesPlayed: 1 });
+    }
+  }, [gameOver, score, gameStarted, checkAchievements]);
 
   return (
     <div className="flex flex-col items-center gap-6">

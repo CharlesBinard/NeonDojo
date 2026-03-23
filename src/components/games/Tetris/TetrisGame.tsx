@@ -2,12 +2,15 @@
 
 // TODO: integrate leaderboard
 
+import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const COLS = 10;
 const ROWS = 20;
 const CELL = 28;
 const COLORS = ['#00f5ff', '#bf5af2', '#ff375f', '#30d158', '#ffd60a', '#ff9f0a', '#32ade6'];
+
+const GAME_ID = 'tetris';
 
 type Piece = { shape: number[][]; color: number };
 type Pos = { x: number; y: number };
@@ -78,6 +81,7 @@ const rotate = (shape: number[][]): number[][] => {
 
 export const TetrisGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const checkAchievements = useAchievementStore((s) => s.checkAchievements);
   const [score, setScore] = useState(0);
   const [lines, setLines] = useState(0);
   const [gameOver, setGameOver] = useState(false);
@@ -374,6 +378,13 @@ export const TetrisGame = () => {
     raf = requestAnimationFrame(loopy);
     return () => cancelAnimationFrame(raf);
   }, [started, render]);
+
+  // Check achievements on game over
+  useEffect(() => {
+    if (gameOver && started) {
+      checkAchievements(GAME_ID, { bestScore: score, gamesPlayed: 1 });
+    }
+  }, [gameOver, started, score, checkAchievements]);
 
   return (
     <div className="flex flex-col items-center gap-4">

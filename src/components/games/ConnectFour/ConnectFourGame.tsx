@@ -1,7 +1,8 @@
 // TODO: integrate leaderboard
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
+import { useAchievementStore } from '@/stores/achievementStore';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type Player = 1 | 2;
 type Cell = Player | null;
@@ -9,6 +10,7 @@ type Board = Cell[][];
 
 const ROWS = 6;
 const COLS = 7;
+const GAME_ID = 'connectfour';
 
 const createEmptyBoard = (): Board => Array.from({ length: ROWS }, () => Array(COLS).fill(null));
 
@@ -104,6 +106,7 @@ const getDropRow = (board: Board, col: number): number => {
 const isBoardFull = (board: Board): boolean => board[0].every((cell) => cell !== null);
 
 export const ConnectFourGame = () => {
+  const checkAchievements = useAchievementStore((s) => s.checkAchievements);
   const [board, setBoard] = useState<Board>(createEmptyBoard);
   const [current, setCurrent] = useState<Player>(1);
   const [winner, setWinner] = useState<Player | 'draw' | null>(null);
@@ -113,6 +116,7 @@ export const ConnectFourGame = () => {
   );
   const [hoverCol, setHoverCol] = useState<number | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
+  const achievementsCheckedRef = useRef(false);
 
   const playerColors = {
     1: {
@@ -176,6 +180,7 @@ export const ConnectFourGame = () => {
     setWinningCells([]);
     setDropping(null);
     setGameStarted(false);
+    achievementsCheckedRef.current = false;
   }, []);
 
   const isWinningCell = (r: number, c: number) =>
@@ -195,6 +200,18 @@ export const ConnectFourGame = () => {
         : winner === 'draw'
           ? 'text-gray-400'
           : 'text-gray-300';
+
+  // Check achievements on game over
+  useEffect(() => {
+    if (winner && gameStarted && !achievementsCheckedRef.current) {
+      achievementsCheckedRef.current = true;
+      if (winner !== 'draw') {
+        checkAchievements(GAME_ID, { wins: 1, gamesPlayed: 1 });
+      } else {
+        checkAchievements(GAME_ID, { gamesPlayed: 1 });
+      }
+    }
+  }, [winner, gameStarted, checkAchievements]);
 
   return (
     <div className="flex flex-col items-center gap-6">

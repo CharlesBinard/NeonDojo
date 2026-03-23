@@ -3,10 +3,12 @@
 // TODO: integrate leaderboard
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useState } from 'react';
+import { useAchievementStore } from '@/stores/achievementStore';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const EMOJIS = ['🎮', '🎲', '🎯', '🏆', '⚡', '🔥', '🌟', '💎'];
 const FLIP_DURATION = 400;
+const GAME_ID = 'memory';
 
 type Card = { id: number; emoji: string; flipped: boolean; matched: boolean };
 
@@ -28,12 +30,15 @@ const makeCards = (): Card[] =>
   }));
 
 export const MemoryGame = () => {
+  const checkAchievements = useAchievementStore((s) => s.checkAchievements);
   const [cards, setCards] = useState<Card[]>(makeCards);
   const [selected, setSelected] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
   const [matched, setMatched] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [started, setStarted] = useState(false);
+  const startTimeRef = useRef<number | null>(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const reset = useCallback(() => {
     setCards(makeCards());
@@ -42,6 +47,8 @@ export const MemoryGame = () => {
     setMatched(0);
     setGameOver(false);
     setStarted(true);
+    startTimeRef.current = Date.now();
+    setElapsedSeconds(0);
   }, []);
 
   useEffect(() => {
@@ -83,6 +90,24 @@ export const MemoryGame = () => {
     setCards((prev) => prev.map((c) => (c.id === idx ? { ...c, flipped: true } : c)));
     setSelected((prev) => [...prev, idx]);
   };
+
+  // Track elapsed time
+  useEffect(() => {
+    if (!started || gameOver) return;
+    const interval = setInterval(() => {
+      if (startTimeRef.current) {
+        setElapsedSeconds(Math.floor((Date.now() - startTimeRef.current) / 1000));
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [started, gameOver]);
+
+  // Check achievements on game over
+  useEffect(() => {
+    if (gameOver && started) {
+      checkAchievements(GAME_ID, { gamesPlayed: 1, bestTime: elapsedSeconds });
+    }
+  }, [gameOver, started, elapsedSeconds, checkAchievements]);
 
   return (
     <div className="flex flex-col items-center gap-6">

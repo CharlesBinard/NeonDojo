@@ -2,9 +2,14 @@ import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { GameCard } from '@/components/ui';
 import { GAMES } from '@/data/games';
+import { useAchievementStore } from '@/stores/achievementStore';
+import { ALL_ACHIEVEMENTS } from '@/lib/achievements';
 
 export const GameHub = () => {
   const navigate = useNavigate();
+  const unlockedAt = useAchievementStore((s) => s.unlockedAt);
+  const unlocked = Object.keys(unlockedAt).length;
+  const total = ALL_ACHIEVEMENTS.length;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center py-24">
@@ -41,14 +46,27 @@ export const GameHub = () => {
         ))}
       </div>
 
-      <motion.p
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="mt-16 text-gray-600 text-sm font-mono"
+        className="mt-10 flex flex-col items-center gap-4"
       >
-        6 jeux · fait avec React & Canvas
-      </motion.p>
+        <button
+          onClick={() => navigate({ to: '/profile' })}
+          className="flex items-center gap-3 px-6 py-3 rounded-xl glass border border-dark-border text-gray-400 hover:text-neon-cyan hover:border-neon-cyan/40 transition-all cursor-pointer"
+        >
+          <span className="text-xl">🏆</span>
+          <span className="font-bold">Profil & Achievements</span>
+          <span className="text-xs font-mono bg-neon-cyan/20 text-neon-cyan px-2 py-0.5 rounded-full">
+            {unlocked}/{total}
+          </span>
+        </button>
+
+        <p className="text-gray-600 text-sm font-mono">
+          8 jeux · fait avec React & Canvas
+        </p>
+      </motion.div>
     </div>
   );
 };

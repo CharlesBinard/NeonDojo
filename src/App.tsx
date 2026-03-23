@@ -1,5 +1,6 @@
 import { RouterProvider } from '@tanstack/react-router';
 import { Header } from '@/components/Header';
+import { AchievementNotification } from '@/components/AchievementNotification';
 import { router } from '@/router';
 
 function App() {
@@ -7,6 +8,7 @@ function App() {
     <div className="min-h-screen bg-dark-bg text-white">
       <Header />
       <RouterProvider router={router} />
+      <AchievementNotification />
       <footer className="py-8 text-center text-gray-600 text-sm font-mono">
         <p></p>
       </footer>

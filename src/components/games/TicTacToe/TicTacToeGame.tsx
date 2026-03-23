@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
 import { useGameStore } from '@/stores/gameStore';
+import { useAchievementStore } from '@/stores/achievementStore';
 
 type Player = 'X' | 'O';
 type Cell = Player | null;
@@ -143,16 +144,19 @@ export const TicTacToeGame = () => {
   const [showScores, setShowScores] = useState(false);
 
   const saveScore = useGameStore((s) => s.saveScore);
+  const checkAchievements = useAchievementStore((s) => s.checkAchievements);
 
   const handleGameOver = useCallback(
     (w: Player | 'draw' | null) => {
       if (w === human) {
         saveScore(GAME_ID, 3);
+        checkAchievements(GAME_ID, { wins: 1, gamesPlayed: 1 });
       } else if (w === 'draw') {
         saveScore(GAME_ID, 1);
+        checkAchievements(GAME_ID, { gamesPlayed: 1 });
       }
     },
-    [human, saveScore]
+    [human, saveScore, checkAchievements]
   );
 
   const reset = useCallback((h: Player) => {

@@ -2,6 +2,7 @@
 
 // TODO: integrate leaderboard
 
+import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const W = 400;
@@ -17,8 +18,11 @@ const PIPE_SPAWN = 100;
 
 type Pipe = { x: number; top: number; bottom: number; scored: boolean };
 
+const GAME_ID = 'flappy';
+
 export const FlappyGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const checkAchievements = useAchievementStore((s) => s.checkAchievements);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<'idle' | 'countdown' | 'playing' | 'dead'>('idle');
@@ -253,6 +257,13 @@ export const FlappyGame = () => {
       ctx.shadowBlur = 0;
     }
   }, [gameState]);
+
+  // Check achievements on death
+  useEffect(() => {
+    if (gameState === 'dead') {
+      checkAchievements(GAME_ID, { bestScore: score, gamesPlayed: 1 });
+    }
+  }, [gameState, score, checkAchievements]);
 
   return (
     <div className="flex flex-col items-center gap-4">

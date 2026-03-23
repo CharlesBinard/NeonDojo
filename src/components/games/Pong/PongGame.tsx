@@ -2,6 +2,7 @@
 
 // TODO: integrate leaderboard
 
+import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const WIDTH = 800;
@@ -13,6 +14,8 @@ const AI_SPEED = 5;
 const PLAYER_SPEED = 7;
 const WIN_SCORE = 5;
 
+const GAME_ID = 'pong';
+
 type Vec2 = { x: number; y: number };
 type GameState = 'idle' | 'playing' | 'scored' | 'gameover' | 'countdown';
 
@@ -21,6 +24,7 @@ const aiY = (HEIGHT - PADDLE_H) / 2;
 
 export const PongGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const checkAchievements = useAchievementStore((s) => s.checkAchievements);
   const [playerScore, setPlayerScore] = useState(0);
   const [aiScore, setAiScore] = useState(0);
   const [gameState, setGameState] = useState<GameState>('idle');
@@ -272,6 +276,17 @@ export const PongGame = () => {
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
   }, [gameState, resetBall, playerScore, aiScore]);
+
+  // Check achievements on game over
+  useEffect(() => {
+    if (gameState === 'gameover') {
+      if (winner === 'player') {
+        checkAchievements(GAME_ID, { wins: 1, gamesPlayed: 1 });
+      } else {
+        checkAchievements(GAME_ID, { gamesPlayed: 1 });
+      }
+    }
+  }, [gameState, winner, checkAchievements]);
 
   return (
     <div className="flex flex-col items-center gap-6">

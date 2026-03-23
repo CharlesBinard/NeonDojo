@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const GRID_SIZE = 4;
@@ -204,7 +205,10 @@ const getTileFontSize = (value: number): string => {
   return 'text-lg';
 };
 
+const GAME_ID = 'numbermerge';
+
 export const NumberMergeGame = () => {
+  const checkAchievements = useAchievementStore((s) => s.checkAchievements);
   const [grid, setGrid] = useState<Grid>(() => {
     const g = createEmptyGrid();
     const [g1] = addRandomTile(g);
@@ -220,6 +224,7 @@ export const NumberMergeGame = () => {
   const [tiles, setTiles] = useState<Tile[]>([]);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const isAnimating = useRef(false);
+  const achievementsCheckedRef = useRef(false);
 
   const buildTiles = useCallback(
     (g: Grid, isNewTile: boolean = false, newTilePos: [number, number] | null = null): Tile[] => {
@@ -255,6 +260,7 @@ export const NumberMergeGame = () => {
     setKeepPlaying(false);
     setGameStarted(true);
     tileIdCounter = 0;
+    achievementsCheckedRef.current = false;
   }, [buildTiles]);
 
   const handleMove = useCallback(
@@ -357,6 +363,22 @@ export const NumberMergeGame = () => {
     if (!gameStarted) setGameStarted(true);
     touchStartRef.current = null;
   };
+
+  // Check achievements on game end
+  useEffect(() => {
+    if ((gameOver || won) && gameStarted && !achievementsCheckedRef.current) {
+      achievementsCheckedRef.current = true;
+      const maxTile = grid.reduce<number>((max, row) => {
+        const rowMax = Math.max(...row.filter((v): v is number => v !== null) as number[]);
+        return Math.max(max, rowMax);
+      }, 0);
+      if (won) {
+        checkAchievements(GAME_ID, { gamesPlayed: 1, highestTile: Math.max(maxTile, 2048) });
+      } else {
+        checkAchievements(GAME_ID, { bestScore: score, gamesPlayed: 1, highestTile: maxTile });
+      }
+    }
+  }, [gameOver, won, gameStarted, grid, score, checkAchievements]);
 
   const gridWidth = GRID_SIZE * CELL_SIZE + (GRID_SIZE + 1) * GAP;
   const gridHeight = gridWidth;
