@@ -3,6 +3,7 @@
 // TODO: integrate leaderboard
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
 
 const COLS = 10;
@@ -82,6 +83,7 @@ const rotate = (shape: number[][]): number[][] => {
 export const TetrisGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const { playSound, startMusic, pauseMusic } = useAudio();
   const [score, setScore] = useState(0);
   const [lines, setLines] = useState(0);
   const [gameOver, setGameOver] = useState(false);
@@ -386,6 +388,22 @@ export const TetrisGame = () => {
     }
   }, [gameOver, started, score, checkAchievements]);
 
+  // Music control based on started state
+  useEffect(() => {
+    if (started && !gameOver && !paused) {
+      startMusic();
+    } else {
+      pauseMusic();
+    }
+  }, [started, gameOver, paused, startMusic, pauseMusic]);
+
+  // Game over sound
+  useEffect(() => {
+    if (gameOver && started) {
+      playSound('gameOver');
+    }
+  }, [gameOver, started, playSound]);
+
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="flex gap-6 text-sm font-mono">
@@ -417,7 +435,10 @@ export const TetrisGame = () => {
               pause
             </div>
             <button
-              onClick={startGame}
+              onClick={() => {
+                playSound('click');
+                startGame();
+              }}
               className="px-8 py-3 rounded-lg bg-green-500/20 border border-green-500 text-green-400 font-bold hover:bg-green-500/30 transition-all cursor-pointer"
             >
               JOUER
@@ -434,7 +455,10 @@ export const TetrisGame = () => {
             </div>
             <div className="text-gray-500 mb-6">{lines} lignes</div>
             <button
-              onClick={startGame}
+              onClick={() => {
+                playSound('click');
+                startGame();
+              }}
               className="px-8 py-3 rounded-lg bg-neon-pink/20 border border-neon-pink text-neon-pink font-bold hover:bg-neon-pink/30 transition-all cursor-pointer"
             >
               REJOUER

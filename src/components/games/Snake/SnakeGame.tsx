@@ -3,6 +3,7 @@
 // TODO: integrate leaderboard
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
 
 const CELL_SIZE = 22;
@@ -35,6 +36,7 @@ const getRandomFood = (snake: Position[]): Position => {
 export const SnakeGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const { playSound, startMusic, pauseMusic } = useAudio();
   const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
   const [food, setFood] = useState<Position>(getRandomFood(INITIAL_SNAKE));
   const [direction, setDirection] = useState<Direction>('RIGHT');
@@ -312,6 +314,22 @@ export const SnakeGame = () => {
     }
   }, [gameOver, score, gameStarted, checkAchievements]);
 
+  // Music control based on isPlaying
+  useEffect(() => {
+    if (isPlaying) {
+      startMusic();
+    } else {
+      pauseMusic();
+    }
+  }, [isPlaying, startMusic, pauseMusic]);
+
+  // Game over sound
+  useEffect(() => {
+    if (gameOver && gameStarted) {
+      playSound('gameOver');
+    }
+  }, [gameOver, gameStarted, playSound]);
+
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="flex gap-8 text-lg font-mono">
@@ -339,7 +357,10 @@ export const SnakeGame = () => {
               <span className="text-white">WASD</span> pour bouger
             </div>
             <button
-              onClick={startGame}
+              onClick={() => {
+                playSound('click');
+                startGame();
+              }}
               className="px-8 py-3 rounded-lg bg-neon-cyan/20 border border-neon-cyan text-neon-cyan font-bold hover:bg-neon-cyan/30 transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.3)] cursor-pointer"
             >
               JOUER
@@ -358,7 +379,10 @@ export const SnakeGame = () => {
               <div className="text-neon-pink mb-4 text-sm">🎉 NOUVEAU BEST !</div>
             )}
             <button
-              onClick={startGame}
+              onClick={() => {
+                playSound('click');
+                startGame();
+              }}
               className="px-8 py-3 rounded-lg bg-neon-pink/20 border border-neon-pink text-neon-pink font-bold hover:bg-neon-pink/30 transition-all hover:shadow-[0_0_20px_rgba(255,55,95,0.3)] cursor-pointer"
             >
               REJOUER

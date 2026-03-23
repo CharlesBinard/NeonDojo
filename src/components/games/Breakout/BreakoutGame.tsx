@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 import { useGameStore } from '@/stores/gameStore';
 
 const WIDTH = 800;
@@ -56,6 +57,7 @@ export const BreakoutGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const saveScore = useGameStore((s) => s.saveScore);
   const getBestScore = useGameStore((s) => s.getBestScore);
+  const { playSound, startMusic, pauseMusic } = useAudio();
 
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
@@ -69,6 +71,8 @@ export const BreakoutGame = () => {
   const mouseXRef = useRef<number | null>(null);
   const launchedRef = useRef(false);
   const animationFrameRef = useRef<number | null>(null);
+  const lastPaddleBounceRef = useRef<number>(0);
+  const lastBrickBounceRef = useRef<number>(0);
 
   const bestScore = getBestScore(GAME_ID);
 
@@ -176,6 +180,7 @@ export const BreakoutGame = () => {
 
       // Ball falls below paddle — lose life
       if (ball.y > HEIGHT + BALL_R) {
+        playSound('loseLife');
         setLives((l) => {
           const nl = l - 1;
           if (nl <= 0) {
@@ -203,6 +208,11 @@ export const BreakoutGame = () => {
         vel.x = Math.sin(angle) * speed;
         vel.y = -Math.cos(angle) * speed;
         ball.y = PADDLE_Y - BALL_R;
+        const now = Date.now();
+        if (now - lastPaddleBounceRef.current > 100) {
+          playSound('bounce');
+          lastPaddleBounceRef.current = now;
+        }
       }
 
       // Brick collisions
@@ -215,6 +225,11 @@ export const BreakoutGame = () => {
           ball.y - BALL_R < brick.y + BRICK_H
         ) {
           brick.alive = false;
+          const nowB = Date.now();
+          if (nowB - lastBrickBounceRef.current > 50) {
+            playSound('brickBreak');
+            lastBrickBounceRef.current = nowB;
+          }
           setScore((s) => {
             const ns = s + brick.points;
             // Check win
@@ -297,7 +312,25 @@ export const BreakoutGame = () => {
     return () => {
       if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
     };
-  }, [gameState, resetBall, saveScore, score]);
+  }, [gameState, resetBall, saveScore, score, playSound]);
+
+  // Music control based on game state
+  useEffect(() => {
+    if (gameState === 'playing') {
+      startMusic();
+    } else if (gameState === 'gameover' || gameState === 'win') {
+      pauseMusic();
+    }
+  }, [gameState, startMusic, pauseMusic]);
+
+  // Win/lose sounds
+  useEffect(() => {
+    if (gameState === 'gameover') {
+      playSound('gameOver');
+    } else if (gameState === 'win') {
+      playSound('win');
+    }
+  }, [gameState, playSound]);
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -338,7 +371,10 @@ export const BreakoutGame = () => {
                 Bouge ta souris pour contrôler la raquette
               </div>
               <button
-                onClick={startGame}
+                onClick={() => {
+                  playSound('click');
+                  startGame();
+                }}
                 className="px-8 py-3 rounded-lg bg-neon-cyan/20 border border-neon-cyan text-neon-cyan font-bold hover:bg-neon-cyan/30 transition-all cursor-pointer"
               >
                 JOUER
@@ -359,7 +395,10 @@ export const BreakoutGame = () => {
               <div className="text-gray-400 mb-1">Score: {score}</div>
               <div className="text-gray-600 text-sm mb-6">Meilleur: {bestScore}</div>
               <button
-                onClick={startGame}
+                onClick={() => {
+                  playSound('click');
+                  startGame();
+                }}
                 className="px-8 py-3 rounded-lg bg-neon-pink/20 border border-neon-pink text-neon-pink font-bold hover:bg-neon-pink/30 transition-all cursor-pointer"
               >
                 REJOUER
@@ -380,7 +419,10 @@ export const BreakoutGame = () => {
               <div className="text-gray-400 mb-1">Score: {score}</div>
               <div className="text-gray-600 text-sm mb-6">Meilleur: {bestScore}</div>
               <button
-                onClick={startGame}
+                onClick={() => {
+                  playSound('click');
+                  startGame();
+                }}
                 className="px-8 py-3 rounded-lg bg-green-500/20 border border-green-400 text-green-400 font-bold hover:bg-green-500/30 transition-all cursor-pointer"
               >
                 REJOUER

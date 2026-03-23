@@ -4,6 +4,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
 
 const EMOJIS = ['🎮', '🎲', '🎯', '🏆', '⚡', '🔥', '🌟', '💎'];
@@ -31,6 +32,7 @@ const makeCards = (): Card[] =>
 
 export const MemoryGame = () => {
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const { playSound, startMusic, pauseMusic } = useAudio();
   const [cards, setCards] = useState<Card[]>(makeCards);
   const [selected, setSelected] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -101,6 +103,22 @@ export const MemoryGame = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, [started, gameOver]);
+
+  // Music control
+  useEffect(() => {
+    if (started && !gameOver) {
+      startMusic();
+    } else {
+      pauseMusic();
+    }
+  }, [started, gameOver, startMusic, pauseMusic]);
+
+  // Win/gameover sound
+  useEffect(() => {
+    if (gameOver && started) {
+      playSound('win');
+    }
+  }, [gameOver, started, playSound]);
 
   // Check achievements on game over
   useEffect(() => {
@@ -176,7 +194,10 @@ export const MemoryGame = () => {
         <div className="flex flex-col items-center gap-4">
           <p className="text-gray-400 text-sm">Retourne les cartes et trouve les paires</p>
           <button
-            onClick={reset}
+            onClick={() => {
+              playSound('click');
+              reset();
+            }}
             className="px-8 py-3 rounded-lg bg-neon-pink/20 border border-neon-pink text-neon-pink font-bold hover:bg-neon-pink/30 transition-all cursor-pointer"
           >
             START
@@ -196,7 +217,10 @@ export const MemoryGame = () => {
             {moves} coups · {EMOJIS.length} paires
           </div>
           <button
-            onClick={reset}
+            onClick={() => {
+              playSound('click');
+              reset();
+            }}
             className="px-8 py-3 rounded-lg bg-neon-pink/20 border border-neon-pink text-neon-pink font-bold hover:bg-neon-pink/30 transition-all cursor-pointer"
           >
             REJOUER

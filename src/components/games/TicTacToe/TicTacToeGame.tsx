@@ -1,7 +1,8 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
 import { useGameStore } from '@/stores/gameStore';
 
@@ -145,6 +146,7 @@ export const TicTacToeGame = () => {
 
   const saveScore = useGameStore((s) => s.saveScore);
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const { playSound, startMusic, pauseMusic } = useAudio();
 
   const handleGameOver = useCallback(
     (w: Player | 'draw' | null) => {
@@ -159,19 +161,45 @@ export const TicTacToeGame = () => {
     [human, saveScore, checkAchievements]
   );
 
-  const reset = useCallback((h: Player) => {
-    setBoard(Array(9).fill(null));
-    setHuman(h);
-    setCurrent('X');
-    setGameOver(false);
-    setWinner(null);
-    setWinningPattern([]);
-    setStarted(true);
-  }, []);
+  const reset = useCallback(
+    (h: Player) => {
+      setBoard(Array(9).fill(null));
+      setHuman(h);
+      setCurrent('X');
+      setGameOver(false);
+      setWinner(null);
+      setWinningPattern([]);
+      setStarted(true);
+      startMusic();
+    },
+    [startMusic]
+  );
 
+  // Win/lose sounds
+  useEffect(() => {
+    if (gameOver) {
+      if (winner === human) {
+        playSound('win');
+      } else {
+        playSound('gameOver');
+      }
+    }
+  }, [gameOver, winner, human, playSound]);
+
+  // Music control based on started and gameOver
+  useEffect(() => {
+    if (started && !gameOver) {
+      startMusic();
+    } else {
+      pauseMusic();
+    }
+  }, [started, gameOver, startMusic, pauseMusic]);
+
+  // Click sound on cell
   const handleCell = useCallback(
     (idx: number) => {
       if (!started || board[idx] || gameOver || current !== human) return;
+      playSound('click');
 
       const newBoard = [...board];
       newBoard[idx] = human;
@@ -211,7 +239,7 @@ export const TicTacToeGame = () => {
         }
       }
     },
-    [started, board, gameOver, current, human, handleGameOver]
+    [started, board, gameOver, current, human, handleGameOver, playSound]
   );
 
   const renderCell = (idx: number) => {

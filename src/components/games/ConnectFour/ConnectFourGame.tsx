@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
 
 type Player = 1 | 2;
@@ -107,6 +108,7 @@ const isBoardFull = (board: Board): boolean => board[0].every((cell) => cell !==
 
 export const ConnectFourGame = () => {
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const { playSound, startMusic, pauseMusic } = useAudio();
   const [board, setBoard] = useState<Board>(createEmptyBoard);
   const [current, setCurrent] = useState<Player>(1);
   const [winner, setWinner] = useState<Player | 'draw' | null>(null);
@@ -140,6 +142,7 @@ export const ConnectFourGame = () => {
       const row = getDropRow(board, col);
       if (row === -1) return;
 
+      playSound('click');
       setDropping({ col, row, player: current });
       setGameStarted(true);
 
@@ -170,7 +173,7 @@ export const ConnectFourGame = () => {
         }, 50);
       }, 400);
     },
-    [board, current, winner, dropping]
+    [board, current, winner, dropping, playSound]
   );
 
   const reset = useCallback(() => {
@@ -181,7 +184,8 @@ export const ConnectFourGame = () => {
     setDropping(null);
     setGameStarted(false);
     achievementsCheckedRef.current = false;
-  }, []);
+    startMusic();
+  }, [startMusic]);
 
   const isWinningCell = (r: number, c: number) =>
     winningCells.some(([wr, wc]) => wr === r && wc === c);
@@ -213,6 +217,26 @@ export const ConnectFourGame = () => {
     }
   }, [winner, gameStarted, checkAchievements]);
 
+  // Music control based on game state
+  useEffect(() => {
+    if (gameStarted && !winner) {
+      startMusic();
+    } else {
+      pauseMusic();
+    }
+  }, [gameStarted, winner, startMusic, pauseMusic]);
+
+  // Win/lose sounds
+  useEffect(() => {
+    if (winner && gameStarted) {
+      if (winner === 'draw') {
+        playSound('gameOver');
+      } else {
+        playSound('win');
+      }
+    }
+  }, [winner, gameStarted, playSound]);
+
   return (
     <div className="flex flex-col items-center gap-6">
       {/* Status */}
@@ -233,13 +257,19 @@ export const ConnectFourGame = () => {
             className="flex gap-3 mt-2"
           >
             <button
-              onClick={reset}
+              onClick={() => {
+                playSound('click');
+                reset();
+              }}
               className="px-6 py-2.5 rounded-xl bg-neon-cyan/20 border border-neon-cyan text-neon-cyan font-bold hover:bg-neon-cyan/30 transition-all cursor-pointer text-sm"
             >
               REJOUER
             </button>
             <button
-              onClick={reset}
+              onClick={() => {
+                playSound('click');
+                reset();
+              }}
               className="px-5 py-2.5 rounded-xl glass border border-dark-border text-gray-400 text-sm hover:text-gray-300 hover:border-gray-600 transition-all cursor-pointer"
             >
               Reset

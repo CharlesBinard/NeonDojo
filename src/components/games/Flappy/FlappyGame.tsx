@@ -3,6 +3,7 @@
 // TODO: integrate leaderboard
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
 
 const W = 400;
@@ -23,6 +24,7 @@ const GAME_ID = 'flappy';
 export const FlappyGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const { playSound, startMusic, pauseMusic } = useAudio();
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [gameState, setGameState] = useState<'idle' | 'countdown' | 'playing' | 'dead'>('idle');
@@ -265,6 +267,22 @@ export const FlappyGame = () => {
     }
   }, [gameState, score, checkAchievements]);
 
+  // Music control based on game state
+  useEffect(() => {
+    if (gameState === 'countdown' || gameState === 'playing') {
+      startMusic();
+    } else {
+      pauseMusic();
+    }
+  }, [gameState, startMusic, pauseMusic]);
+
+  // Death sound
+  useEffect(() => {
+    if (gameState === 'dead') {
+      playSound('loseLife');
+    }
+  }, [gameState, playSound]);
+
   return (
     <div className="flex flex-col items-center gap-4">
       <div className="flex gap-8 text-lg font-mono">
@@ -290,7 +308,10 @@ export const FlappyGame = () => {
             <div className="text-2xl font-bold text-yellow-400 mb-2">FLAPPY</div>
             <div className="text-gray-400 text-sm mb-6">SPACE / ↑ / W pour sauter</div>
             <button
-              onClick={start}
+              onClick={() => {
+                playSound('click');
+                start();
+              }}
               className="px-8 py-3 rounded-lg bg-yellow-400/20 border border-yellow-400 text-yellow-400 font-bold hover:bg-yellow-400/30 transition-all cursor-pointer"
             >
               JOUER
@@ -316,7 +337,10 @@ export const FlappyGame = () => {
               <div className="text-yellow-400 mb-4 text-sm">🎉 BEST !</div>
             )}
             <button
-              onClick={start}
+              onClick={() => {
+                playSound('click');
+                start();
+              }}
               className="px-8 py-3 rounded-lg bg-neon-pink/20 border border-neon-pink text-neon-pink font-bold hover:bg-neon-pink/30 transition-all cursor-pointer"
             >
               REJOUER

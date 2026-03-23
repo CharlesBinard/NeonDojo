@@ -3,6 +3,7 @@
 // TODO: integrate leaderboard
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
 
 const WIDTH = 800;
@@ -25,6 +26,7 @@ const aiY = (HEIGHT - PADDLE_H) / 2;
 export const PongGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const { playSound, startMusic, pauseMusic } = useAudio();
   const [playerScore, setPlayerScore] = useState(0);
   const [aiScore, setAiScore] = useState(0);
   const [gameState, setGameState] = useState<GameState>('idle');
@@ -39,6 +41,7 @@ export const PongGame = () => {
   const keysRef = useRef<Set<string>>(new Set());
   const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const launchDirRef = useRef(1);
+  const lastBounceRef = useRef<number>(0);
 
   const resetBall = useCallback((_dir: number) => {
     ballRef.current = { x: WIDTH / 2, y: HEIGHT / 2 };
@@ -160,6 +163,11 @@ export const PongGame = () => {
             const hitPos = (ball.y - paddleTop) / PADDLE_H;
             vel.x = Math.abs(vel.x) * 1.05;
             vel.y = (hitPos - 0.5) * 10;
+            const now = Date.now();
+            if (now - lastBounceRef.current > 100) {
+              playSound('bounce');
+              lastBounceRef.current = now;
+            }
           }
         }
 
@@ -172,6 +180,11 @@ export const PongGame = () => {
             const hitPos = (ball.y - paddleTop) / PADDLE_H;
             vel.x = -Math.abs(vel.x) * 1.05;
             vel.y = (hitPos - 0.5) * 10;
+            const now = Date.now();
+            if (now - lastBounceRef.current > 100) {
+              playSound('bounce');
+              lastBounceRef.current = now;
+            }
           }
         }
 
@@ -275,7 +288,7 @@ export const PongGame = () => {
     return () => {
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
-  }, [gameState, resetBall, playerScore, aiScore]);
+  }, [gameState, resetBall, playerScore, aiScore, playSound]);
 
   // Check achievements on game over
   useEffect(() => {
@@ -287,6 +300,26 @@ export const PongGame = () => {
       }
     }
   }, [gameState, winner, checkAchievements]);
+
+  // Music control based on game state
+  useEffect(() => {
+    if (gameState === 'countdown' || gameState === 'playing') {
+      startMusic();
+    } else if (gameState === 'gameover') {
+      pauseMusic();
+    }
+  }, [gameState, startMusic, pauseMusic]);
+
+  // Win/lose sound on game over
+  useEffect(() => {
+    if (gameState === 'gameover') {
+      if (winner === 'player') {
+        playSound('win');
+      } else {
+        playSound('gameOver');
+      }
+    }
+  }, [gameState, winner, playSound]);
 
   return (
     <div className="flex flex-col items-center gap-6">
@@ -316,7 +349,10 @@ export const PongGame = () => {
               bouger
             </div>
             <button
-              onClick={startGame}
+              onClick={() => {
+                playSound('click');
+                startGame();
+              }}
               className="px-8 py-3 rounded-lg bg-neon-cyan/20 border border-neon-cyan text-neon-cyan font-bold hover:bg-neon-cyan/30 transition-all cursor-pointer"
             >
               JOUER
@@ -343,7 +379,10 @@ export const PongGame = () => {
               {playerScore} - {aiScore}
             </div>
             <button
-              onClick={startGame}
+              onClick={() => {
+                playSound('click');
+                startGame();
+              }}
               className="px-8 py-3 rounded-lg bg-neon-cyan/20 border border-neon-cyan text-neon-cyan font-bold hover:bg-neon-cyan/30 transition-all cursor-pointer"
             >
               REJOUER
