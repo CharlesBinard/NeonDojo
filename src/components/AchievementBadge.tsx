@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ALL_ACHIEVEMENTS, type AchievementId } from '@/lib/achievements';
+import { type AchievementId, ALL_ACHIEVEMENTS } from '@/lib/achievements';
 import { useAchievementStore } from '@/stores/achievementStore';
 
 interface AchievementBadgeProps {
@@ -60,9 +60,7 @@ export const AchievementBadge = ({
         {achievement.name}
       </div>
       {showDescription && (
-        <div
-          className={`text-gray-500 ${size === 'sm' ? 'text-xs' : 'text-xs'} leading-tight`}
-        >
+        <div className={`text-gray-500 ${size === 'sm' ? 'text-xs' : 'text-xs'} leading-tight`}>
           {achievement.description}
         </div>
       )}

@@ -2,8 +2,8 @@
 
 // TODO: integrate leaderboard
 
-import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAchievementStore } from '@/stores/achievementStore';
 
 const CELL_SIZE = 22;
 const GRID_WIDTH = 22;

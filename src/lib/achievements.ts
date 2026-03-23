@@ -136,7 +136,7 @@ export const ALL_ACHIEVEMENTS: AchievementDefinition[] = [
   },
   {
     id: 'memory_elephant',
-    name: 'Mémoire d\'Éléphant',
+    name: "Mémoire d'Éléphant",
     description: 'Termine une partie de Memory en moins de 15 secondes',
     emoji: '🐘',
     gameId: 'memory',

@@ -1,9 +1,9 @@
 'use client';
 
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAchievementStore } from '@/stores/achievementStore';
 import { ALL_ACHIEVEMENTS } from '@/lib/achievements';
+import { useAchievementStore } from '@/stores/achievementStore';
 
 export const AchievementNotification = () => {
   const pendingNotifications = useAchievementStore((s) => s.pendingNotifications);

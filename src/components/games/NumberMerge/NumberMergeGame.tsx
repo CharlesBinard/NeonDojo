@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAchievementStore } from '@/stores/achievementStore';
 
 const GRID_SIZE = 4;
 const CELL_SIZE = 80;
@@ -369,7 +369,7 @@ export const NumberMergeGame = () => {
     if ((gameOver || won) && gameStarted && !achievementsCheckedRef.current) {
       achievementsCheckedRef.current = true;
       const maxTile = grid.reduce<number>((max, row) => {
-        const rowMax = Math.max(...row.filter((v): v is number => v !== null) as number[]);
+        const rowMax = Math.max(...(row.filter((v): v is number => v !== null) as number[]));
         return Math.max(max, rowMax);
       }, 0);
       if (won) {

@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import {
-  ALL_ACHIEVEMENTS,
   ACHIEVEMENTS_BY_GAME,
-  GLOBAL_ACHIEVEMENTS,
   type AchievementId,
+  ALL_ACHIEVEMENTS,
+  GLOBAL_ACHIEVEMENTS,
 } from '@/lib/achievements';
 
 export interface GameStats {
@@ -94,9 +94,7 @@ export const useAchievementStore = create<AchievementStore>()(
 
       getLocked: () => {
         const { unlockedAt } = get();
-        return ALL_ACHIEVEMENTS
-          .filter((a) => !unlockedAt[a.id])
-          .map((a) => a.id);
+        return ALL_ACHIEVEMENTS.filter((a) => !unlockedAt[a.id]).map((a) => a.id);
       },
 
       getByGame: (gameId: string) => {
@@ -146,11 +144,8 @@ export const useAchievementStore = create<AchievementStore>()(
         updatedStats.totalGames = totalGames;
 
         // Compute global stats
-        const uniqueGames = ALL_GAME_IDS.filter(
-          (id) =>
-            id === gameId
-              ? updatedStats.gamesPlayed > 0
-              : (gameStats[id]?.gamesPlayed ?? 0) > 0
+        const uniqueGames = ALL_GAME_IDS.filter((id) =>
+          id === gameId ? updatedStats.gamesPlayed > 0 : (gameStats[id]?.gamesPlayed ?? 0) > 0
         );
         const globalStats: GameStats = {
           wins: 0,
@@ -179,11 +174,8 @@ export const useAchievementStore = create<AchievementStore>()(
           let unlocked = false;
           if (ach.id === 'global_explorer') {
             // All game IDs must have been played at least once
-            unlocked = ALL_GAME_IDS.every(
-              (id) =>
-                id === gameId
-                  ? updatedStats.gamesPlayed > 0
-                  : (gameStats[id]?.gamesPlayed ?? 0) > 0
+            unlocked = ALL_GAME_IDS.every((id) =>
+              id === gameId ? updatedStats.gamesPlayed > 0 : (gameStats[id]?.gamesPlayed ?? 0) > 0
             );
           } else if (ach.id === 'global_hardcore') {
             unlocked = globalStats.totalGames >= 10;

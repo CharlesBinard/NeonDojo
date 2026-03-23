@@ -2,8 +2,8 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useState } from 'react';
-import { useGameStore } from '@/stores/gameStore';
 import { useAchievementStore } from '@/stores/achievementStore';
+import { useGameStore } from '@/stores/gameStore';
 
 type Player = 'X' | 'O';
 type Cell = Player | null;

@@ -2,8 +2,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { GameCard } from '@/components/ui';
 import { GAMES } from '@/data/games';
-import { useAchievementStore } from '@/stores/achievementStore';
 import { ALL_ACHIEVEMENTS } from '@/lib/achievements';
+import { useAchievementStore } from '@/stores/achievementStore';
 
 export const GameHub = () => {
   const navigate = useNavigate();
@@ -63,9 +63,7 @@ export const GameHub = () => {
           </span>
         </button>
 
-        <p className="text-gray-600 text-sm font-mono">
-          8 jeux · fait avec React & Canvas
-        </p>
+        <p className="text-gray-600 text-sm font-mono">8 jeux · fait avec React & Canvas</p>
       </motion.div>
     </div>
   );

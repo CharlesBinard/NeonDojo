@@ -1,6 +1,6 @@
 import { RouterProvider } from '@tanstack/react-router';
-import { Header } from '@/components/Header';
 import { AchievementNotification } from '@/components/AchievementNotification';
+import { Header } from '@/components/Header';
 import { router } from '@/router';
 
 function App() {

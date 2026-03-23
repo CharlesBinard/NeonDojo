@@ -3,8 +3,8 @@
 // TODO: integrate leaderboard
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAchievementStore } from '@/stores/achievementStore';
 
 const EMOJIS = ['🎮', '🎲', '🎯', '🏆', '⚡', '🔥', '🌟', '💎'];
 const FLIP_DURATION = 400;

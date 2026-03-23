@@ -1,8 +1,8 @@
 // TODO: integrate leaderboard
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAchievementStore } from '@/stores/achievementStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useAchievementStore } from '@/stores/achievementStore';
 
 type Player = 1 | 2;
 type Cell = Player | null;

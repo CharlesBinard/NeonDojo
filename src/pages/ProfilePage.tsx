@@ -1,12 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from '@tanstack/react-router';
-import { useAchievementStore } from '@/stores/achievementStore';
-import { ALL_ACHIEVEMENTS, ACHIEVEMENTS_BY_GAME, GLOBAL_ACHIEVEMENTS, GAME_NAMES } from '@/lib/achievements';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { AchievementBadge } from '@/components/AchievementBadge';
 import { GAMES } from '@/data/games';
+import {
+  ACHIEVEMENTS_BY_GAME,
+  ALL_ACHIEVEMENTS,
+  GAME_NAMES,
+  GLOBAL_ACHIEVEMENTS,
+} from '@/lib/achievements';
+import { useAchievementStore } from '@/stores/achievementStore';
 
 type Filter = 'all' | 'unlocked' | 'locked';
 
@@ -72,9 +77,7 @@ export const ProfilePage = () => {
         <div className="text-3xl font-black text-white mb-1">
           {unlocked} <span className="text-gray-500 font-normal text-xl">/ {total}</span>
         </div>
-        <div className="text-sm text-gray-400 mb-3">
-          {percentage}% complété
-        </div>
+        <div className="text-sm text-gray-400 mb-3">{percentage}% complété</div>
         {/* Progress bar */}
         <div className="w-full h-2 bg-dark-bg rounded-full overflow-hidden">
           <motion.div
@@ -107,15 +110,14 @@ export const ProfilePage = () => {
       <div className="w-full max-w-4xl space-y-10">
         {GAME_ORDER.map((gameId) => {
           const gameAchievements =
-            gameId === 'global'
-              ? GLOBAL_ACHIEVEMENTS
-              : ACHIEVEMENTS_BY_GAME[gameId] ?? [];
+            gameId === 'global' ? GLOBAL_ACHIEVEMENTS : (ACHIEVEMENTS_BY_GAME[gameId] ?? []);
 
           const filtered = gameAchievements.filter((a) => filterFn(a.id));
           if (filtered.length === 0) return null;
 
           const game = GAMES.find((g) => g.id === gameId);
-          const gameName = gameId === 'global' ? '🌍 Global' : game?.name ?? GAME_NAMES[gameId] ?? gameId;
+          const gameName =
+            gameId === 'global' ? '🌍 Global' : (game?.name ?? GAME_NAMES[gameId] ?? gameId);
           const gameEmoji = game?.emoji ?? (gameId === 'global' ? '🌍' : '❓');
 
           const gameUnlocked = gameAchievements.filter((a) => unlockedAt[a.id]).length;
