@@ -1,10 +1,10 @@
 'use client';
 
-// TODO: integrate leaderboard
-
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAudio } from '@/hooks/useAudio';
+import { GameOverlay } from '@/components/ui';
 import { useAchievementStore } from '@/stores/achievementStore';
+import { useGameStore } from '@/stores/gameStore';
 
 const CELL_SIZE = 22;
 const GRID_WIDTH = 22;
@@ -36,6 +36,7 @@ const getRandomFood = (snake: Position[]): Position => {
 export const SnakeGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const saveScore = useGameStore((s) => s.saveScore);
   const { playSound, startMusic, pauseMusic } = useAudio();
   const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
   const [food, setFood] = useState<Position>(getRandomFood(INITIAL_SNAKE));
@@ -47,18 +48,34 @@ export const SnakeGame = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const gameLoopRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const directionRef = useRef<Direction>(direction);
+  // Refs to avoid stale closure in game loop
+  const scoreRef = useRef(0);
+  const foodRef = useRef<Position>(food);
 
   useEffect(() => {
     directionRef.current = direction;
   }, [direction]);
 
+  // Keep scoreRef in sync
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
+
+  // Keep foodRef in sync
+  useEffect(() => {
+    foodRef.current = food;
+  }, [food]);
+
   const resetGame = useCallback(() => {
     const newSnake = INITIAL_SNAKE.map((s) => ({ ...s }));
+    const newFood = getRandomFood(newSnake);
     setSnake(newSnake);
-    setFood(getRandomFood(newSnake));
+    setFood(newFood);
+    foodRef.current = newFood;
     setDirection('RIGHT');
     directionRef.current = 'RIGHT';
     setScore(0);
+    scoreRef.current = 0;
     setGameOver(false);
     setIsPlaying(false);
     setGameStarted(false);
@@ -93,29 +110,33 @@ export const SnakeGame = () => {
       if (head.x < 0 || head.x >= GRID_WIDTH || head.y < 0 || head.y >= GRID_HEIGHT) {
         setGameOver(true);
         setIsPlaying(false);
-        setHighScore((prev) => Math.max(prev, score));
+        setHighScore((prev) => Math.max(prev, scoreRef.current));
         return prevSnake;
       }
 
       if (prevSnake.some((s) => s.x === head.x && s.y === head.y)) {
         setGameOver(true);
         setIsPlaying(false);
-        setHighScore((prev) => Math.max(prev, score));
+        setHighScore((prev) => Math.max(prev, scoreRef.current));
         return prevSnake;
       }
 
+      const currentFood = foodRef.current;
       const newSnake = [head, ...prevSnake];
 
-      if (head.x === food.x && head.y === food.y) {
+      if (head.x === currentFood.x && head.y === currentFood.y) {
         setScore((s) => s + 10);
-        setFood(getRandomFood(newSnake));
+        scoreRef.current += 10;
+        const newFood = getRandomFood(newSnake);
+        setFood(newFood);
+        foodRef.current = newFood;
       } else {
         newSnake.pop();
       }
 
       return newSnake;
     });
-  }, [food, score]);
+  }, []);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -310,9 +331,10 @@ export const SnakeGame = () => {
   // Check achievements on game over
   useEffect(() => {
     if (gameOver && gameStarted) {
+      saveScore(GAME_ID, score);
       checkAchievements(GAME_ID, { bestScore: score, gamesPlayed: 1 });
     }
-  }, [gameOver, score, gameStarted, checkAchievements]);
+  }, [gameOver, score, gameStarted, checkAchievements, saveScore]);
 
   // Music control based on isPlaying
   useEffect(() => {
@@ -349,45 +371,47 @@ export const SnakeGame = () => {
         />
 
         {!gameStarted && !gameOver && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-dark-bg/80 rounded-xl">
-            <div className="text-4xl mb-4">🐍</div>
-            <div className="text-2xl font-bold text-neon-cyan mb-2">SNAKE</div>
-            <div className="text-gray-400 mb-6 text-center px-8">
-              <span className="text-white">Arrow keys</span> ou{' '}
-              <span className="text-white">WASD</span> pour bouger
-            </div>
-            <button
-              onClick={() => {
-                playSound('click');
-                startGame();
-              }}
-              className="px-8 py-3 rounded-lg bg-neon-cyan/20 border border-neon-cyan text-neon-cyan font-bold hover:bg-neon-cyan/30 transition-all hover:shadow-[0_0_20px_rgba(0,245,255,0.3)] cursor-pointer"
-            >
-              JOUER
-            </button>
-          </div>
+          <GameOverlay
+            emoji="🐍"
+            title="SNAKE"
+            subtitle={
+              <>
+                <span className="text-white">Arrow keys</span> ou{' '}
+                <span className="text-white">WASD</span> pour bouger
+              </>
+            }
+            buttons={[
+              {
+                label: 'JOUER',
+                onClick: () => {
+                  playSound('click');
+                  startGame();
+                },
+                variant: 'primary',
+              },
+            ]}
+            variant="start"
+          />
         )}
 
         {gameOver && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-dark-bg/80 rounded-xl">
-            <div className="text-4xl mb-4">💀</div>
-            <div className="text-2xl font-bold text-neon-pink mb-2">GAME OVER</div>
-            <div className="text-gray-400 mb-2">
-              Score: <span className="text-white font-bold">{score}</span>
-            </div>
-            {score >= highScore && score > 0 && (
-              <div className="text-neon-pink mb-4 text-sm">🎉 NOUVEAU BEST !</div>
-            )}
-            <button
-              onClick={() => {
-                playSound('click');
-                startGame();
-              }}
-              className="px-8 py-3 rounded-lg bg-neon-pink/20 border border-neon-pink text-neon-pink font-bold hover:bg-neon-pink/30 transition-all hover:shadow-[0_0_20px_rgba(255,55,95,0.3)] cursor-pointer"
-            >
-              REJOUER
-            </button>
-          </div>
+          <GameOverlay
+            emoji="💀"
+            title="GAME OVER"
+            score={score}
+            isNewBest={score >= highScore && score > 0}
+            buttons={[
+              {
+                label: 'REJOUER',
+                onClick: () => {
+                  playSound('click');
+                  startGame();
+                },
+                variant: 'danger',
+              },
+            ]}
+            variant="gameover"
+          />
         )}
       </div>
 
