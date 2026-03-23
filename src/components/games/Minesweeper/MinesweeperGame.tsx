@@ -146,7 +146,6 @@ const Cell = ({
   const revealed = cell.isRevealed;
   const flagged = cell.isFlagged;
   const isMine = cell.isMine;
-  
 
   let bgClass = 'bg-dark-card border-dark-border';
   let content: React.ReactNode = null;
