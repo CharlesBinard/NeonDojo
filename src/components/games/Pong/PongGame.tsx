@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useAudio } from '@/hooks/useAudio';
 import { GameOverlay } from '@/components/ui';
+import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
 
 const BASE_W = 800;
@@ -269,7 +269,13 @@ export const PongGame = () => {
       ctx.shadowColor = '#00f5ff';
       ctx.fillStyle = '#00f5ff';
       ctx.beginPath();
-      ctx.roundRect(20 * scale, playerPaddleRef.current * scale, PADDLE_W * scale, PADDLE_H * scale, 4);
+      ctx.roundRect(
+        20 * scale,
+        playerPaddleRef.current * scale,
+        PADDLE_W * scale,
+        PADDLE_H * scale,
+        4
+      );
       ctx.fill();
 
       // AI paddle
@@ -277,7 +283,13 @@ export const PongGame = () => {
       ctx.shadowColor = '#bf5af2';
       ctx.fillStyle = '#bf5af2';
       ctx.beginPath();
-      ctx.roundRect((BASE_W - 20 - PADDLE_W) * scale, aiPaddleRef.current * scale, PADDLE_W * scale, PADDLE_H * scale, 4);
+      ctx.roundRect(
+        (BASE_W - 20 - PADDLE_W) * scale,
+        aiPaddleRef.current * scale,
+        PADDLE_W * scale,
+        PADDLE_H * scale,
+        4
+      );
       ctx.fill();
 
       // Ball
@@ -294,9 +306,9 @@ export const PongGame = () => {
       ctx.font = `bold ${48 * scale}px Inter, sans-serif`;
       ctx.fillStyle = 'rgba(0, 245, 255, 0.3)';
       ctx.textAlign = 'center';
-      ctx.fillText(String(playerScore), BASE_W / 4 * scale, 60 * scale);
+      ctx.fillText(String(playerScore), (BASE_W / 4) * scale, 60 * scale);
       ctx.fillStyle = 'rgba(191, 90, 242, 0.3)';
-      ctx.fillText(String(aiScore), (BASE_W * 3) / 4 * scale, 60 * scale);
+      ctx.fillText(String(aiScore), ((BASE_W * 3) / 4) * scale, 60 * scale);
     };
 
     const loop = () => {

@@ -6,6 +6,7 @@ import {
   ALL_ACHIEVEMENTS,
   GLOBAL_ACHIEVEMENTS,
 } from '@/lib/achievements';
+import { GAMES } from '@/data/games';
 
 export interface GameStats {
   wins: number;
@@ -39,16 +40,7 @@ interface AchievementStore {
   getUniqueGamesPlayed: () => string[];
 }
 
-const ALL_GAME_IDS = [
-  'snake',
-  'pong',
-  'memory',
-  'tetris',
-  'flappy',
-  'tictactoe',
-  'connectfour',
-  'numbermerge',
-];
+const ALL_GAME_IDS: string[] = GAMES.map((g) => g.id);
 
 const makeEmptyGameStats = (): GameStats => ({
   wins: 0,

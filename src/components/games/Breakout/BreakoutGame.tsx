@@ -320,7 +320,13 @@ export const BreakoutGame = () => {
       ctx.shadowColor = '#00f5ff';
       ctx.fillStyle = '#00f5ff';
       ctx.beginPath();
-      ctx.roundRect(paddleRef.current * scale, PADDLE_Y * scale, PADDLE_W * scale, PADDLE_H * scale, 7);
+      ctx.roundRect(
+        paddleRef.current * scale,
+        PADDLE_Y * scale,
+        PADDLE_W * scale,
+        PADDLE_H * scale,
+        7
+      );
       ctx.fill();
 
       // Ball

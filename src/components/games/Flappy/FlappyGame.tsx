@@ -1,10 +1,9 @@
 'use client';
 
-// TODO: integrate leaderboard
-
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
+import { useGameStore } from '@/stores/gameStore';
 
 const W = 400;
 const H = 600;
@@ -24,6 +23,7 @@ const GAME_ID = 'flappy';
 export const FlappyGame = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const saveScore = useGameStore((s) => s.saveScore);
   const { playSound, startMusic, pauseMusic } = useAudio();
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
@@ -263,9 +263,10 @@ export const FlappyGame = () => {
   // Check achievements on death
   useEffect(() => {
     if (gameState === 'dead') {
+      saveScore(GAME_ID, score);
       checkAchievements(GAME_ID, { bestScore: score, gamesPlayed: 1 });
     }
-  }, [gameState, score, checkAchievements]);
+  }, [gameState, score, checkAchievements, saveScore]);
 
   // Music control based on game state
   useEffect(() => {

@@ -365,6 +365,14 @@ export function useAudio(): AudioState {
     localStorage.setItem(STORAGE_KEY, String(enabled));
   }, [enabled]);
 
+  // Cleanup: stop music on unmount
+  useEffect(() => {
+    return () => {
+      stopMusic();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const toggle = useCallback(() => {
     setEnabled((prev) => {
       const next = !prev;

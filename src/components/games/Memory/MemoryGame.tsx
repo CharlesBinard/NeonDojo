@@ -1,11 +1,10 @@
 'use client';
 
-// TODO: integrate leaderboard
-
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAudio } from '@/hooks/useAudio';
 import { useAchievementStore } from '@/stores/achievementStore';
+import { useGameStore } from '@/stores/gameStore';
 
 const EMOJIS = ['🎮', '🎲', '🎯', '🏆', '⚡', '🔥', '🌟', '💎'];
 const FLIP_DURATION = 400;
@@ -32,6 +31,7 @@ const makeCards = (): Card[] =>
 
 export const MemoryGame = () => {
   const checkAchievements = useAchievementStore((s) => s.checkAchievements);
+  const saveScore = useGameStore((s) => s.saveScore);
   const { playSound, startMusic, pauseMusic } = useAudio();
   const [cards, setCards] = useState<Card[]>(makeCards);
   const [selected, setSelected] = useState<number[]>([]);
@@ -123,9 +123,10 @@ export const MemoryGame = () => {
   // Check achievements on game over
   useEffect(() => {
     if (gameOver && started) {
+      saveScore(GAME_ID, moves);
       checkAchievements(GAME_ID, { gamesPlayed: 1, bestTime: elapsedSeconds });
     }
-  }, [gameOver, started, elapsedSeconds, checkAchievements]);
+  }, [gameOver, started, elapsedSeconds, checkAchievements, moves, saveScore]);
 
   return (
     <div className="flex flex-col items-center gap-6">

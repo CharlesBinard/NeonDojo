@@ -12,12 +12,14 @@ import {
   revealCell,
   toggleFlag,
 } from '@/lib/gameLogic/minesweeper';
+import { useGameStore } from '@/stores/gameStore';
 
 type GameState = 'ready' | 'playing' | 'won' | 'lost';
 
 const ROWS = 9;
 const COLS = 9;
 const MINE_COUNT = 10;
+const GAME_ID = 'minesweeper';
 
 const NUMBER_COLORS: Record<number, string> = {
   1: 'text-blue-400',
@@ -204,6 +206,7 @@ export const MinesweeperGame = () => {
   const [elapsed, setElapsed] = useState(0);
   const [showScores, setShowScores] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const saveScore = useGameStore((s) => s.saveScore);
 
   const flagCount = countFlags(board);
 
@@ -294,12 +297,14 @@ export const MinesweeperGame = () => {
       if (cell.isMine) {
         setBoard(revealAllMines(newBoard));
         setGameState('lost');
+        saveScore(GAME_ID, elapsed);
         return;
       }
 
       // Check win
       if (checkWin(newBoard)) {
         setGameState('won');
+        saveScore(GAME_ID, elapsed);
       }
     },
     [board, gameState]
