@@ -3,7 +3,6 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
-import { AudioToggle } from '@/components/AudioToggle';
 import { BackButton } from '@/components/ui';
 import { GAMES } from '@/data/games';
 import type { GameId } from '@/types/games';
@@ -115,22 +114,10 @@ export const GameView = () => {
       className="min-h-screen py-24"
     >
       <div className="container mx-auto px-4 flex flex-col items-center gap-8">
-        <div className="flex flex-row items-center gap-4 w-full max-w-2xl">
-          <div className="flex flex-col items-center gap-2 flex-1">
-            <div className="text-5xl mb-2">{game.emoji}</div>
-            <h1 className={`text-3xl font-black ${colorClass}`}>{game.name}</h1>
-            <p className="text-gray-500 text-sm">{game.description}</p>
-          </div>
-          <AudioToggle />
-          {canPause && (
-            <button
-              onClick={togglePause}
-              className="text-2xl p-2 rounded-lg hover:bg-dark-card transition-colors cursor-pointer"
-              title={paused ? 'Reprendre' : 'Pause'}
-            >
-              {paused ? '▶️' : '⏸️'}
-            </button>
-          )}
+        <div className="flex flex-col items-center gap-2 w-full max-w-2xl">
+          <div className="text-5xl mb-2">{game.emoji}</div>
+          <h1 className={`text-3xl font-black ${colorClass}`}>{game.name}</h1>
+          <p className="text-gray-500 text-sm">{game.description}</p>
         </div>
 
         <div className="relative">

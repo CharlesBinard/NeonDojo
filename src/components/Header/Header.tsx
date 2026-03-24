@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { AudioToggle } from '@/components/AudioToggle';
 
 interface HeaderProps {
   title?: string;
@@ -30,7 +31,8 @@ export const Header = ({ title, showBack, onBack }: HeaderProps) => {
               <span className="font-bold text-xl gradient-text">Rywoox</span>
             </div>
           )}
-          <div className="text-sm font-mono text-gray-500">{title && !showBack ? title : null}</div>
+          {!showBack && title && <div className="text-sm font-mono text-gray-500">{title}</div>}
+          <AudioToggle />
         </div>
       </div>
     </motion.header>
