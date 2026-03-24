@@ -89,7 +89,7 @@ const rotateGrid = (grid: Grid, times: number): Grid => {
 
 const moveGrid = (grid: Grid, dir: Direction): { grid: Grid; score: number; moved: boolean } => {
   // Rotate so we always slide left
-  const rotations: Record<Direction, number> = { LEFT: 0, UP: 1, RIGHT: 2, DOWN: 3 };
+  const rotations: Record<Direction, number> = { LEFT: 0, UP: 3, RIGHT: 2, DOWN: 1 };
   const g = rotateGrid(grid, rotations[dir]);
   let totalScore = 0;
   let moved = false;
